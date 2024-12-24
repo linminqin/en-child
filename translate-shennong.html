@@ -134,13 +134,64 @@
             gap: 8px;
             padding-right: 40px; /* 为喇叭图标留出空间 */
         }
+
+        .stats {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 1000;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .stats span {
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        .stats .number {
+            transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            display: inline-block;
+            padding: 0 5px;
+            font-weight: 600;
+        }
+
+        #successRate.number {
+            color: #2196F3;
+            font-size: 1.2em;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background-color: #e3f2fd;
+        }
+
+        .stats .number.highlight {
+            transform: scale(1.3);
+            color: #1976D2;
+        }
+
+        #successRate.number.highlight {
+            transform: scale(1.4);
+            background-color: #bbdefb;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
+        }
+
+        /* 为了防止内容被固定的stats遮挡，给container添加上边距 */
+        .container {
+            margin-top: 70px;
+        }
     </style>
 </head>
 <body>
-    <div class="stats" style="text-align: center; margin: 10px 0; font-size: 16px;">
-        <span>成功: <span id="successCount">0</span></span>
-        <span style="margin: 0 20px">失败: <span id="failCount">0</span></span>
-        <span>成功率: <span id="successRate">0%</span></span>
+    <div class="stats">
+        <span>成功: <span id="successCount" class="number">0</span></span>
+        <span>失败: <span id="failCount" class="number">0</span></span>
+        <span>成功率: <span id="successRate" class="number">0%</span></span>
     </div>
     <audio id="tts-audio"></audio>
     <div class="container">
@@ -316,11 +367,27 @@
 
         // 更新统计信息
         function updateStats() {
-            document.getElementById('successCount').textContent = successCount;
-            document.getElementById('failCount').textContent = failCount;
+            const successElem = document.getElementById('successCount');
+            const failElem = document.getElementById('failCount');
+            const rateElem = document.getElementById('successRate');
+            
+            // 更新数值并添加高亮动画
+            function updateWithAnimation(elem, newValue) {
+                elem.textContent = newValue;
+                elem.classList.add('highlight');
+                setTimeout(() => elem.classList.remove('highlight'), 500);
+            }
+
+            // 更新成功次数
+            updateWithAnimation(successElem, successCount);
+            
+            // 更新失败次数
+            updateWithAnimation(failElem, failCount);
+            
+            // 更新成功率
             const total = successCount + failCount;
             const rate = total === 0 ? 0 : Math.round((successCount / total) * 100);
-            document.getElementById('successRate').textContent = rate + '%';
+            updateWithAnimation(rateElem, rate + '%');
         }
 
         function checkMatch() {
