@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词连线练习</title>
+    <style>
+        /* 移动端适配的基础样式 */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px;
+            flex-direction: row;
+            gap: 10px;
+            padding: 0 10px;
+        }
+
+        /* 移动端适配 */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: row;
+                margin: 10px;
+                padding: 0 5px;
+            }
+            .column {
+                width: 33% !important;
+            }
+            .word-item {
+                padding: 8px 5px;
+                margin: 5px 2px;
+                font-size: 12px;
+                min-height: 36px;
+            }
+            .speaker-icon {
+                padding: 8px;
+                margin-left: 4px;
+                font-size: 14px;
+                min-width: 30px;
+                min-height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        .column {
+            width: 30%;
+        }
+        .word-item {
+            margin: 10px 0;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 50px;
+            height: auto;
+            word-break: break-word;
+        }
+        .word-item:hover {
+            background-color: #f0f0f0;
+        }
+        .word-item.selected {
+            background-color: #e3f2fd;
+            border-color: #2196F3;
+        }
+        .word-item.matched {
+            background-color: #e8f5e9 !important;
+            border-color: #81c784 !important;
+            cursor: not-allowed !important;
+            opacity: 1 !important;
+            color: #2e7d32 !important;
+            pointer-events: none !important;
+            box-shadow: none !important;
+        }
+        #resetBtn {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #resetBtn:hover {
+            background-color: #d32f2f;
+        }
+        .speaker-icon {
+            display: inline-block;
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #2196F3;
+            font-size: 16px;
+            padding: 8px;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .speaker-icon:hover {
+            color: #1976D2;
+        }
+        .attempt-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 12px;
+            color: #666;
+            background: rgba(0,0,0,0.1);
+            padding: 2px 4px;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        #phoneticColumn .word-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-right: 40px; /* 为喇叭图标留出空间 */
+        }
+    </style>
+</head>
+<body>
+    <div class="stats" style="text-align: center; margin: 10px 0; font-size: 16px;">
+        <span>成功: <span id="successCount">0</span></span>
+        <span style="margin: 0 20px">失败: <span id="failCount">0</span></span>
+        <span>成功率: <span id="successRate">0%</span></span>
+    </div>
+    <audio id="tts-audio"></audio>
+    <div class="container">
+        <div class="column" id="englishColumn">
+            <div class="word-item" data-word="divine">divine</div>
+            <div class="word-item" data-word="the god of the Divine Farmer">the god of the "Divine Farmer"</div>
+            <div class="word-item" data-word="farm">farm (v.)</div>
+            <div class="word-item" data-word="because of">because of</div>
+            <div class="word-item" data-word="survive">survive</div>
+            <div class="word-item" data-word="starvation">starvation</div>
+            <div class="word-item" data-word="gradually">gradually</div>
+            <div class="word-item" data-word="develop">develop</div>
+            <div class="word-item" data-word="agriculture">agriculture</div>
+            <div class="word-item" data-word="even though">even though</div>
+            <div class="word-item" data-word="no longer">no longer</div>
+            <div class="word-item" data-word="in short supply">in short supply</div>
+            <div class="word-item" data-word="receive">receive</div>
+            <div class="word-item" data-word="medical">medical</div>
+            <div class="word-item" data-word="treatment">treatment</div>
+            <div class="word-item" data-word="medication">medication</div>
+            <div class="word-item" data-word="scarce">scarce</div>
+            <div class="word-item" data-word="Be worried about">Be worried about</div>
+            <div class="word-item" data-word="believe">believe</div>
+            <div class="word-item" data-word="He didn't believe in">He didn't believe in</div>
+        </div>
+        <div class="column" id="phoneticColumn">
+            <div class="word-item" data-word="[dɪˈvaɪn]">/dɪˈvaɪn/</div>
+            <div class="word-item" data-word="[ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə]">/ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə/</div>
+            <div class="word-item" data-word="[fɑːm]">/fɑːm/</div>
+            <div class="word-item" data-word="[bɪˈkɒz ɒv]">/bɪˈkɒz ɒv/</div>
+            <div class="word-item" data-word="[səˈvaɪv]">/səˈvaɪv/</div>
+            <div class="word-item" data-word="[stɑːˈveɪʃn]">/stɑːˈveɪʃn/</div>
+            <div class="word-item" data-word="[ˈɡrædʒuəli]">/ˈɡrædʒuəli/</div>
+            <div class="word-item" data-word="[dɪˈveləp]">/dɪˈveləp/</div>
+            <div class="word-item" data-word="[ˈæɡrɪkʌltʃə]">/ˈæɡrɪkʌltʃə/</div>
+            <div class="word-item" data-word="[ˈiːvn ðəʊ]">/ˈiːvn ðəʊ/</div>
+            <div class="word-item" data-word="[nəʊ ˈlɒŋɡə]">/nəʊ ˈlɒŋɡə/</div>
+            <div class="word-item" data-word="[ɪn ʃɔːt səˈplaɪ]">/ɪn ʃɔːt səˈplaɪ/</div>
+            <div class="word-item" data-word="[rɪˈsiːv]">/rɪˈsiːv/</div>
+            <div class="word-item" data-word="[ˈmedɪkl]">/ˈmedɪkl/</div>
+            <div class="word-item" data-word="[ˈtriːtmənt]">/ˈtriːtmənt/</div>
+            <div class="word-item" data-word="[ˌmedɪˈkeɪʃn]">/ˌmedɪˈkeɪʃn/</div>
+            <div class="word-item" data-word="[skeəs]">/skeəs/</div>
+            <div class="word-item" data-word="[bi ˈwʌrid əˈbaʊt]">/bi ˈwʌrid əˈbaʊt/</div>
+            <div class="word-item" data-word="[bɪˈliːv]">/bɪˈliːv/</div>
+            <div class="word-item" data-word="[hi dɪdnt bɪˈliːv ɪn]">/hi dɪdnt bɪˈliːv ɪn/</div>
+        </div>
+        <div class="column" id="chineseColumn">
+            <div class="word-item" data-word="神的">神的</div>
+            <div class="word-item" data-word="神农帝">神农帝</div>
+            <div class="word-item" data-word="种田">种田</div>
+            <div class="word-item" data-word="由于">由于</div>
+            <div class="word-item" data-word="生存">生存</div>
+            <div class="word-item" data-word="饥饿">饥饿</div>
+            <div class="word-item" data-word="逐渐地">逐渐地</div>
+            <div class="word-item" data-word="发展">发展</div>
+            <div class="word-item" data-word="农业">农业</div>
+            <div class="word-item" data-word="即使">即使</div>
+            <div class="word-item" data-word="不再">不再</div>
+            <div class="word-item" data-word="供应不足">供应不足</div>
+            <div class="word-item" data-word="收到">收到</div>
+            <div class="word-item" data-word="医学的">医学的</div>
+            <div class="word-item" data-word="治疗">治疗</div>
+            <div class="word-item" data-word="药物">药</div>
+            <div class="word-item" data-word="缺乏的">缺乏的</div>
+            <div class="word-item" data-word="担心">担心</div>
+            <div class="word-item" data-word="相信">相信</div>
+            <div class="word-item" data-word="他不相信">他不相信</div>
+        </div>
+    </div>
+    <button id="resetBtn">重置</button>
+
+    <script>
+        const answers = {
+            'divine': ['/dɪˈvaɪn/', '神的'],
+            'the god of the Divine Farmer': ['/ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə/', '神农帝'],
+            'farm': ['/fɑːm/', '种田'],
+            'because of': ['/bɪˈkɒz ɒv/', '由于'],
+            'survive': ['/səˈvaɪv/', '生存'],
+            'starvation': ['/stɑːˈveɪʃn/', '饥饿'],
+            'gradually': ['/ˈɡrædʒuəli/', '逐渐地'],
+            'develop': ['/dɪˈveləp/', '发展'],
+            'agriculture': ['/ˈæɡrɪkʌltʃə/', '农业'],
+            'even though': ['/ˈiːvn ðəʊ/', '即使'],
+            'no longer': ['/nəʊ ˈlɒŋɡə/', '不再'],
+            'in short supply': ['/ɪn ʃɔːt səˈplaɪ/', '供应不足'],
+            'receive': ['/rɪˈsiːv/', '收到'],
+            'medical': ['/ˈmedɪkl/', '医学的'],
+            'treatment': ['/ˈtriːtmənt/', '治疗'],
+            'medication': ['/ˌmedɪˈkeɪʃn/', '药物'],
+            'scarce': ['/skeəs/', '缺乏的'],
+            'Be worried about': ['/bi ˈwʌrid əˈbaʊt/', '担心'],
+            'believe': ['/bɪˈliːv/', '相信'],
+            'He didn\'t believe in': ['/hi dɪdnt bɪˈliːv ɪn/', '他不相信']
+        };
+
+        let selectedItems = {
+            english: null,
+            phonetic: null,
+            chinese: null
+        };
+
+        // 记录每个格子的尝试次数
+        const attemptCounts = new Map();
+
+        // 更新尝试次数显示
+        function updateAttemptCount(item) {
+            const count = (attemptCounts.get(item) || 0) + 1;
+            attemptCounts.set(item, count);
+            
+            let countDisplay = item.querySelector('.attempt-count');
+            if (!countDisplay) {
+                countDisplay = document.createElement('span');
+                countDisplay.className = 'attempt-count';
+                item.appendChild(countDisplay);
+            }
+            countDisplay.textContent = count;
+        }
+
+        document.querySelectorAll('.word-item').forEach(item => {
+            if (!item.classList.contains('matched')) {
+                item.addEventListener('click', handleItemClick);
+            }
+        });
+
+        function handleItemClick(e) {
+            const item = e.target;
+            if (item.classList.contains('matched')) {
+                return;
+            }
+
+            const column = item.parentElement.id;
+            const columnType = column.replace('Column', '');
+
+            // 如果已经选中了这一列的其他项，先取消选中
+            const currentSelected = selectedItems[columnType];
+            if (currentSelected && currentSelected !== item) {
+                currentSelected.classList.remove('selected');
+            }
+
+            // 如果是音标列，自动发音
+            if (columnType === 'phonetic') {
+                const phoneticWord = item.dataset.word.replace('[', '/').replace(']', '/');
+                for (const [key, value] of Object.entries(answers)) {
+                    if (value[0] === phoneticWord) {
+                        speak(key.replace(/["']/g, ''));
+                        break;
+                    }
+                }
+            }
+
+            // 切换项的选中状态
+            if (item === currentSelected) {
+                // 如果点击的是当前选中的项，取消选中
+                item.classList.remove('selected');
+                selectedItems[columnType] = null;
+            } else {
+                // 否则选中新项
+                item.classList.add('selected');
+                selectedItems[columnType] = item;
+            }
+
+            // 检查是否匹配
+            if (selectedItems.english && selectedItems.phonetic && selectedItems.chinese) {
+                checkMatch();
+            }
+        }
+
+        // 添加计数器和计时器
+        let successCount = 0;
+        let failCount = 0;
+        const startTime = Date.now();
+
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById('successCount').textContent = successCount;
+            document.getElementById('failCount').textContent = failCount;
+            const total = successCount + failCount;
+            const rate = total === 0 ? 0 : Math.round((successCount / total) * 100);
+            document.getElementById('successRate').textContent = rate + '%';
+        }
+
+        function checkMatch() {
+            if (selectedItems.english && selectedItems.phonetic && selectedItems.chinese) {
+                const englishWord = selectedItems.english.dataset.word;
+                const phoneticWord = selectedItems.phonetic.dataset.word.replace('[', '/').replace(']', '/');
+                const chineseWord = selectedItems.chinese.dataset.word;
+
+                if (answers[englishWord] && 
+                    answers[englishWord][0] === phoneticWord && 
+                    answers[englishWord][1] === chineseWord) {
+                    successCount++;
+                    updateStats();
+                    
+                    // 更新尝试次数（成功时）
+                    [selectedItems.english, selectedItems.phonetic, selectedItems.chinese].forEach(item => {
+                        if (item) {
+                            updateAttemptCount(item);
+                        }
+                    });
+
+                    [selectedItems.english, selectedItems.phonetic, selectedItems.chinese].forEach(item => {
+                        item.classList.remove('selected');
+                        item.classList.add('matched');
+                    });
+
+                    // 重置选中状态
+                    selectedItems = {
+                        english: null,
+                        phonetic: null,
+                        chinese: null
+                    };
+
+                    // 检查是否所有单词都匹配成功
+                    const unmatchedItems = document.querySelectorAll('.word-item:not(.matched)');
+                    if (unmatchedItems.length === 0) {
+                        const totalSeconds = Math.round((Date.now() - startTime) / 1000);
+                        const minutes = Math.floor(totalSeconds / 60);
+                        const seconds = totalSeconds % 60;
+                        const timeText = minutes > 0 ? 
+                            `${minutes}分${seconds}秒` : 
+                            `${seconds}秒`;
+                        
+                        // 收集配对失败过的词语
+                        const failedWordsMap = new Map();
+                        document.querySelectorAll('#englishColumn .word-item').forEach(item => {
+                            const count = attemptCounts.get(item) || 0;
+                            if (count > 1) {  // 如果尝试次数大于1，说明有失败
+                                // 移除可能存在的尝试次数显示，只保留单词本身
+                                const wordText = item.textContent.replace(/\s*\d+$/, '').trim();
+                                failedWordsMap.set(wordText, count);
+                            }
+                        });
+
+                        // 按错误次数从大到小排序
+                        const sortedFailedWords = Array.from(failedWordsMap.entries())
+                            .sort((a, b) => b[1] - a[1])
+                            .map(([word, count]) => `${word.trim()} ${count}次`);
+
+                        // 构建庆祝文本
+                        let celebrationText = `🎉 恭喜！你已完成所有单词的匹配！\n总用时：${timeText}`;
+                        if (sortedFailedWords.length > 0) {
+                            celebrationText += `\n\n需要加强记忆的词语：\n${sortedFailedWords.join('\n')}\n\n继续加油！`;
+                        }
+
+                        const celebration = document.createElement('div');
+                        celebration.textContent = celebrationText;
+                        celebration.style.cssText = `
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            background-color: rgba(76, 175, 80, 0.9);
+                            color: white;
+                            padding: 20px 40px;
+                            border-radius: 8px;
+                            font-size: 18px;
+                            z-index: 1000;
+                            text-align: center;
+                            white-space: pre-line;
+                            max-height: 80vh;
+                            overflow-y: auto;
+                        `;
+                        document.body.appendChild(celebration);
+                        setTimeout(() => celebration.remove(), 10000);  // 增加显示时间到10秒
+                    }
+                } else {
+                    failCount++;
+                    updateStats();
+                    
+                    // 更新尝试次数
+                    [selectedItems.english, selectedItems.phonetic, selectedItems.chinese].forEach(item => {
+                        if (item) {
+                            updateAttemptCount(item);
+                            item.classList.remove('selected');
+                        }
+                    });
+                    
+                    // 重置选中状态
+                    selectedItems = {
+                        english: null,
+                        phonetic: null,
+                        chinese: null
+                    };
+
+                    const tip = document.createElement('div');
+                    tip.textContent = '匹配不正确，请重试';
+                    tip.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background-color: rgba(244, 67, 54, 0.9);
+                        color: white;
+                        padding: 10px 20px;
+                        border-radius: 4px;
+                        z-index: 1000;
+                    `;
+                    document.body.appendChild(tip);
+                    setTimeout(() => tip.remove(), 1500);
+                }
+            }
+        }
+
+        // 添加机排函数
+        function shuffleChildren(parent) {
+            const children = Array.from(parent.children);
+            for (let i = children.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                parent.appendChild(children[j]);
+            }
+        }
+
+        // 页面载时随机排序
+        window.addEventListener('load', () => {
+            const columns = document.querySelectorAll('.column');
+            columns.forEach(column => shuffleChildren(column));
+        });
+
+        // 重置按钮也要随机排序
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            // 重置所有状态
+            successCount = 0;
+            failCount = 0;
+            let startTime = Date.now();
+            updateStats();
+            attemptCounts.clear();
+            
+            // 移除所有选中和匹配状态
+            document.querySelectorAll('.word-item').forEach(item => {
+                item.classList.remove('matched', 'selected');
+                // 移除尝试次数显示
+                const countDisplay = item.querySelector('.attempt-count');
+                if (countDisplay) {
+                    countDisplay.remove();
+                }
+                // 移除事件监听器
+                item.removeEventListener('click', handleItemClick);
+                // 重新添加事件监听器
+                item.addEventListener('click', handleItemClick);
+            });
+
+            // 重置选中状态
+            selectedItems = {
+                english: null,
+                phonetic: null,
+                chinese: null
+            };
+
+            // 重新随机排序
+            const columns = document.querySelectorAll('.column');
+            columns.forEach(column => shuffleChildren(column));
+
+            // 重新初始化音标列的喇叭图标
+            document.querySelectorAll('#phoneticColumn .word-item').forEach(item => {
+                const phoneticWord = item.dataset.word.replace('[', '/').replace(']', '/');
+                let englishWord = '';
+                for (const [key, value] of Object.entries(answers)) {
+                    if (value[0] === phoneticWord) {
+                        englishWord = key.replace(/["']/g, '');
+                        break;
+                    }
+                }
+                const phoneticText = item.textContent.replace('🔊', '').trim();
+                item.innerHTML = `
+                    ${phoneticText}
+                    <span class="speaker-icon" data-speak="${englishWord}">
+                        🔊
+                    </span>
+                `;
+            });
+        });
+
+        // 创建发音函数
+        function speak(text) {
+            try {
+                // 确保语音合成已初始化
+                if (!window.speechSynthesis) {
+                    console.error('Speech synthesis not supported');
+                    return;
+                }
+                
+                // 移除音标中的方括号和其他特殊字符
+                const cleanText = text.replace(/[\[\]]/g, '').replace(/ˈ|ˌ/g, '');
+                
+                // 取消所有正在进行的发音
+                window.speechSynthesis.cancel();
+                
+                // 创建新的发音请求
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'en-US';
+                // 获取所有可用的语音
+                const voices = window.speechSynthesis.getVoices();
+                // 按优先级选择男声
+                const voice = voices.find(v => 
+                    v.name.includes('Google US English Male') ||  // Android 美式男声
+                    v.name.includes('Microsoft David') ||     // Windows 男声
+                    v.name.includes('Alex') ||               // Mac 男声
+                    v.name.includes('Male') ||              // 其他男声
+                    v.name.includes('英语') ||              // 中文系统的英语声音
+                    v.lang.startsWith('en-')               // 任何英语声音
+                );
+                if (voice) {
+                    utterance.voice = voice;
+                }
+                utterance.rate = 0.9;  // 稍微慢一点的语速
+                utterance.volume = 1;
+                utterance.pitch = 0.9;  // 稍微低一点的音调
+                
+                // 添加错误处理
+                utterance.onerror = (event) => {
+                    console.error('Speech synthesis error:', event);
+                };
+                
+                // 尝试播放
+                window.speechSynthesis.speak(utterance);
+            } catch (error) {
+                console.error('Speech synthesis error:', error);
+            }
+        }
+
+        // 确保语音列已加载
+        if (window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                const voices = window.speechSynthesis.getVoices();
+                console.log('Available voices:', voices.map(v => v.name));
+            };
+        }
+
+        // 在页面加载时初始化语音合成
+        window.addEventListener('load', () => {
+            // 触发一次静音的语音合成来初始化系统
+            const silence = new SpeechSynthesisUtterance('');
+            silence.volume = 0;
+            window.speechSynthesis.speak(silence);
+        });
+
+        // 为所有音标添加喇叭图标和发音功能
+        document.querySelectorAll('#phoneticColumn .word-item').forEach(item => {
+            // 根据音标找到对应英语单词
+            const phoneticWord = item.dataset.word.replace('[', '/').replace(']', '/');
+            let englishWord = '';
+            for (const [key, value] of Object.entries(answers)) {
+                if (value[0] === phoneticWord) {
+                    englishWord = key.replace(/["']/g, '');
+                    break;
+                }
+            }
+
+            const phoneticText = item.textContent;
+            item.innerHTML = `
+                ${phoneticText}
+                <span class="speaker-icon" data-speak="${englishWord}">
+                    🔊
+                </span>
+            `;
+        });
+
+        // 为喇叭图标添加点击事件监听器
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.speaker-icon')) {
+                e.stopPropagation();
+                // 获取包含喇叭图标的格子
+                const wordItem = e.target.closest('.word-item');
+                if (wordItem) {
+                    // 模拟点击格子
+                    handleItemClick({ target: wordItem });
+                }
+                // 播放声音
+                const speakText = e.target.closest('.speaker-icon').dataset.speak;
+                speak(speakText);
+            }
+        });
+    </script>
+</body>
+</html> 
