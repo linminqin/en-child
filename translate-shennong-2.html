@@ -230,7 +230,7 @@
         let stats = {
             totalWords: Object.keys(wordData).length,  // 总单词数
             completedWords: 0,  // 已完成的单词数
-            wrongWords: 0       // 出错的单词数（每个单词只计算��次）
+            wrongWords: 0       // 出错的单词数（每个单词只计算一次）
         };
 
         // 添加开始时间变量
@@ -274,8 +274,9 @@
             updateWithAnimation('correctCount', stats.completedWords);
             updateWithAnimation('wrongCount', stats.wrongWords);
             
-            const newRate = stats.totalWords === 0 ? 0 : 
-                Math.round(((stats.totalWords - stats.wrongWords) / stats.totalWords) * 100);
+            const totalAttempts = stats.completedWords + stats.wrongWords;
+            const newRate = totalAttempts === 0 ? 0 : 
+                Math.round((stats.completedWords / totalAttempts) * 100);
             updateWithAnimation('successRate', newRate, '%');
         }
 
@@ -416,12 +417,15 @@
                 .sort((a, b) => b[1] - a[1])
                 .map(([word, attempts]) => `${word}: 错误${attempts}次`);
 
+            const totalAttempts = stats.completedWords + stats.wrongWords;
+            const successRate = Math.round((stats.completedWords / totalAttempts) * 100);
+
             let message = '🎉 恭喜完成所有单词练习！\n\n';
             message += `总用时：${timeText}\n`;
             message += `总单词数: ${stats.totalWords}\n`;
-            message += `正确单词: ${stats.totalWords - stats.wrongWords}\n`;
-            message += `出错单词: ${stats.wrongWords}\n`;
-            message += `成功率: ${Math.round(((stats.totalWords - stats.wrongWords) / stats.totalWords) * 100)}%\n\n`;
+            message += `正确次数: ${stats.completedWords}\n`;
+            message += `错误次数: ${stats.wrongWords}\n`;
+            message += `成功率: ${successRate}%\n\n`;
 
             if (wrongWords.length > 0) {
                 message += '需要加强的单词：\n' + wrongWords.join('\n');
