@@ -99,7 +99,7 @@
             gap: 5px;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
+            font-size: 32px;
         }
 
         .phonetic-chars {
@@ -118,7 +118,7 @@
             background: white;
             transition: all 0.3s ease;
             user-select: none;
-            font-size: 20px;
+            font-size: 28px;
             min-width: 45px;
             min-height: 45px;
             display: flex;
@@ -196,7 +196,7 @@
             
             .char {
                 padding: 10px 14px;
-                font-size: 14px;
+                font-size: 20px;
                 min-width: 40px;
                 min-height: 40px;
             }
@@ -212,7 +212,7 @@
 
         #phoneticHint {
             color: #666;
-            font-size: 20px !important;
+            font-size: 28px !important;
         }
     </style>
 </head>
@@ -413,7 +413,7 @@
                 }
                 wrongAttempts[currentWord]++;
 
-                // 如果连续错误三次，显示正确音标
+                // 如果连���错误三次，显示正确音标
                 if (wrongAttempts[currentWord] % 3 === 0) {
                     const phoneticHint = document.getElementById('phoneticHint');
                     phoneticHint.textContent = currentPhonetic;
@@ -467,7 +467,7 @@
             const wrongWords = Object.entries(wrongAttempts)
                 .filter(([_, attempts]) => attempts > 0)
                 .sort((a, b) => b[1] - a[1])
-                .map(([word, attempts]) => `${word}: 错���${attempts}次`);
+                .map(([word, attempts]) => `${word}: 错误${attempts}次`);
 
             const totalAttempts = stats.completedWords + stats.wrongWords;
             const successRate = Math.round((stats.completedWords / totalAttempts) * 100);
