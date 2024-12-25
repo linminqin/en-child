@@ -78,7 +78,7 @@
         .word-display {
             text-align: center;
             margin: 30px 0;
-            font-size: 24px;
+            font-size: 32px;
             font-weight: bold;
         }
 
@@ -191,7 +191,7 @@
             }
             
             .word-display {
-                font-size: 20px;
+                font-size: 24px;
             }
             
             .char {
@@ -232,7 +232,7 @@
         <div class="phonetic-input" id="phoneticInput"></div>
         <div class="phonetic-chars" id="phoneticChars"></div>
         <div class="buttons-container">
-            <button class="backspace-btn" id="backspaceBtn" disabled>退格</button>
+            <button class="backspace-btn" id="backspaceBtn" disabled>��格</button>
             <button class="submit-btn" id="submitBtn" disabled>提交</button>
         </div>
         <div class="hint-text">错误达到三次，系统会显示正确的音标</div>
@@ -268,7 +268,7 @@
 
         const startTime = Date.now();
 
-        // 将音标字符串转换为字符数组
+        // 将���标字符串转换为字符数组
         function splitPhonetic(phonetic) {
             return phonetic.split('').filter(char => char !== ' ');
         }
@@ -384,7 +384,7 @@
                 // 播放正确的发音
                 speak(currentWord);
 
-                // ���示正确提示
+                // 显示正确提示
                 const feedback = document.createElement('div');
                 feedback.textContent = '正确！';
                 feedback.style.cssText = `
