@@ -111,7 +111,7 @@
         }
 
         .char {
-            padding: 8px 12px;
+            padding: 12px 16px;
             border: 1px solid #ddd;
             border-radius: 4px;
             cursor: pointer;
@@ -119,6 +119,11 @@
             transition: all 0.3s ease;
             user-select: none;
             font-size: 20px;
+            min-width: 45px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .char:hover {
@@ -151,6 +156,34 @@
             cursor: not-allowed;
         }
 
+        .backspace-btn {
+            padding: 10px 20px;
+            background-color: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .backspace-btn:hover {
+            background-color: #F57C00;
+        }
+
+        .backspace-btn:disabled {
+            background-color: #bdbdbd;
+            cursor: not-allowed;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -162,8 +195,10 @@
             }
             
             .char {
-                padding: 6px 10px;
+                padding: 10px 14px;
                 font-size: 14px;
+                min-width: 40px;
+                min-height: 40px;
             }
         }
 
@@ -196,14 +231,17 @@
     <div class="phonetic-container">
         <div class="phonetic-input" id="phoneticInput"></div>
         <div class="phonetic-chars" id="phoneticChars"></div>
-        <button class="submit-btn" id="submitBtn" disabled>提交</button>
-        <div class="hint-text">错误达到三次，系统会提示正确的音标</div>
+        <div class="buttons-container">
+            <button class="backspace-btn" id="backspaceBtn" disabled>退格</button>
+            <button class="submit-btn" id="submitBtn" disabled>提交</button>
+        </div>
+        <div class="hint-text">错误达到三次，系统会显示正确的音标</div>
     </div>
 
     <script>
         const wordData = {
             'divine': ['/dɪˈvaɪn/', '神的'],
-            'farm': ['/fɑːm/', '种田'],
+            'farm': ['/fɑːm/', '种植'],
             'survive': ['/səˈvaɪv/', '生存'],
             'starvation': ['/stɑːˈveɪʃn/', '饥饿'],
             'gradually': ['/ˈɡrædʒuəli/', '逐渐地'],
@@ -310,7 +348,10 @@
             if (element.classList.contains('selected')) {
                 // 取消选择
                 element.classList.remove('selected');
-                selectedChars = selectedChars.filter(c => c !== char);
+                // 获取所有已选中的元素
+                const allSelectedElements = document.querySelectorAll('.char.selected');
+                // 重建选中的字符数组
+                selectedChars = Array.from(allSelectedElements).map(el => el.textContent);
             } else {
                 // 选择字符
                 element.classList.add('selected');
@@ -318,8 +359,10 @@
             }
             
             updatePhoneticInput();
-            // 当有字符被选择时启用提交按钮
-            document.getElementById('submitBtn').disabled = selectedChars.length === 0;
+            // 更新两个按钮的状态
+            const hasChars = selectedChars.length > 0;
+            document.getElementById('submitBtn').disabled = !hasChars;
+            document.getElementById('backspaceBtn').disabled = !hasChars;
         }
 
         function updatePhoneticInput() {
@@ -424,7 +467,7 @@
             const wrongWords = Object.entries(wrongAttempts)
                 .filter(([_, attempts]) => attempts > 0)
                 .sort((a, b) => b[1] - a[1])
-                .map(([word, attempts]) => `${word}: 错误${attempts}次`);
+                .map(([word, attempts]) => `${word}: 错���${attempts}次`);
 
             const totalAttempts = stats.completedWords + stats.wrongWords;
             const successRate = Math.round((stats.completedWords / totalAttempts) * 100);
@@ -490,6 +533,23 @@
 
         // 添加提交按钮事件监听
         document.getElementById('submitBtn').addEventListener('click', checkAnswer);
+
+        // 添加退格按钮事件监听
+        document.getElementById('backspaceBtn').addEventListener('click', () => {
+            if (selectedChars.length > 0) {
+                // 找到最后一个选中的元素
+                const selectedElements = document.querySelectorAll('.char.selected');
+                const lastElement = selectedElements[selectedElements.length - 1];
+                if (lastElement) {
+                    lastElement.classList.remove('selected');
+                    selectedChars.pop();
+                    updatePhoneticInput();
+                    // 更新按钮状态
+                    document.getElementById('submitBtn').disabled = selectedChars.length === 0;
+                    document.getElementById('backspaceBtn').disabled = selectedChars.length === 0;
+                }
+            }
+        });
     </script>
 </body>
 </html> 
