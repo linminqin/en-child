@@ -241,7 +241,7 @@
     <script>
         const wordData = {
             'divine': ['/dɪˈvaɪn/', '神的'],
-            'farm': ['/fɑːm/', '种植'],
+            'farm': ['/fɑːm/', '种田'],
             'survive': ['/səˈvaɪv/', '生存'],
             'starvation': ['/stɑːˈveɪʃn/', '饥饿'],
             'gradually': ['/ˈɡrædʒuəli/', '逐渐地'],
@@ -250,7 +250,7 @@
             'receive': ['/rɪˈsiːv/', '收到'],
             'medical': ['/ˈmedɪkl/', '医学的'],
             'treatment': ['/ˈtriːtmənt/', '治疗'],
-            'medication': ['/ˌmedɪˈkeɪʃn/', '药物'],
+            'medication': ['/ˌmedɪˈkeɪʃn/', '药'],
             'scarce': ['/skeəs/', '缺乏的'],
             'believe': ['/bɪˈliːv/', '相信']
         };
@@ -384,7 +384,7 @@
                 // 播放正确的发音
                 speak(currentWord);
 
-                // 显示正确提示
+                // ���示正确提示
                 const feedback = document.createElement('div');
                 feedback.textContent = '正确！';
                 feedback.style.cssText = `
@@ -413,7 +413,7 @@
                 }
                 wrongAttempts[currentWord]++;
 
-                // 如果连���错误三次，显示正确音标
+                // 如果连续错误三次，显示正确音标
                 if (wrongAttempts[currentWord] % 3 === 0) {
                     const phoneticHint = document.getElementById('phoneticHint');
                     phoneticHint.textContent = currentPhonetic;
