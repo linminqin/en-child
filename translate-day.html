@@ -384,10 +384,14 @@
             if (element.classList.contains('selected')) {
                 // 取消选择
                 element.classList.remove('selected');
-                // 获取所有已选中的元素
-                const allSelectedElements = document.querySelectorAll('.char.selected');
-                // 重建选中的字符数组
-                selectedChars = Array.from(allSelectedElements).map(el => el.textContent);
+                // 找���当前字符在selectedChars中的位置并移除
+                const charToRemove = element.textContent;
+                const index = selectedChars.findIndex(c => 
+                    c.toLowerCase() === charToRemove.toLowerCase()
+                );
+                if (index !== -1) {
+                    selectedChars.splice(index, 1);
+                }
             } else {
                 // 选择字符
                 element.classList.add('selected');
@@ -405,7 +409,7 @@
             const inputContainer = document.getElementById('phoneticInput');
             inputContainer.innerHTML = '';
             
-            // 显示已选择的字母，首字母大写，其余小写
+            // 直接使用 selectedChars 数组中的字符，保持选择顺序
             selectedChars.forEach((char, index) => {
                 const span = document.createElement('span');
                 // 如果是第一个字母则大写，其余小写
@@ -604,7 +608,7 @@
                 selectedChars.pop();
                 updatePhoneticInput();
                 
-                // 更新按钮状态
+                // ��新按钮状态
                 document.getElementById('submitBtn').disabled = selectedChars.length === 0;
                 document.getElementById('backspaceBtn').disabled = selectedChars.length === 0;
             }
