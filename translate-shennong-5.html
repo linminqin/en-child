@@ -353,21 +353,23 @@
             const letters = currentWord.split('');
             const shuffledLetters = shuffleArray([...letters]);
             
-            // 显示打散的字母
+            // 显示打散的字母，找到原单词中的首字母位置
             const charsContainer = document.getElementById('phoneticChars');
             charsContainer.innerHTML = '';
             shuffledLetters.forEach(letter => {
                 const div = document.createElement('div');
                 div.className = 'char';
-                div.textContent = letter;
+                // 如果这个字母在原单词中是首字母，就显示大写，否则显示小写
+                const isFirstLetter = letter.toLowerCase() === currentWord.charAt(0).toLowerCase();
+                div.textContent = isFirstLetter ? letter.toUpperCase() : letter.toLowerCase();
                 div.onclick = () => selectChar(letter, div);
                 charsContainer.appendChild(div);
             });
 
-            // 在输入区域创建占位符
+            // 在输入区域创建占位符时，确保首字母大写，其余小写
             const inputContainer = document.getElementById('phoneticInput');
             inputContainer.innerHTML = '';
-            letters.forEach(() => {
+            letters.forEach((_, index) => {
                 const span = document.createElement('span');
                 span.className = 'phonetic-placeholder';
                 span.style.minWidth = '20px';
@@ -382,10 +384,14 @@
             if (element.classList.contains('selected')) {
                 // 取消选择
                 element.classList.remove('selected');
-                // 获取所有已选中的元素
-                const allSelectedElements = document.querySelectorAll('.char.selected');
-                // 重建选中的字符数组
-                selectedChars = Array.from(allSelectedElements).map(el => el.textContent);
+                // 找���当前字符在selectedChars中的位置并移除
+                const charToRemove = element.textContent;
+                const index = selectedChars.findIndex(c => 
+                    c.toLowerCase() === charToRemove.toLowerCase()
+                );
+                if (index !== -1) {
+                    selectedChars.splice(index, 1);
+                }
             } else {
                 // 选择字符
                 element.classList.add('selected');
@@ -403,10 +409,11 @@
             const inputContainer = document.getElementById('phoneticInput');
             inputContainer.innerHTML = '';
             
-            // 显示已选择的字母
-            selectedChars.forEach(char => {
+            // 直接使用 selectedChars 数组中的字符，保持选择顺序
+            selectedChars.forEach((char, index) => {
                 const span = document.createElement('span');
-                span.textContent = char;
+                // 如果是第一个字母则大写，其余小写
+                span.textContent = index === 0 ? char.toUpperCase() : char.toLowerCase();
                 span.className = 'phonetic-placeholder';
                 span.style.minWidth = '20px';
                 span.style.display = 'inline-block';
@@ -425,11 +432,13 @@
         }
 
         function checkAnswer() {
+            // 将用户输入的答案首字母大写，其余小写
             const assembledWord = selectedChars.join('');
-            const isCorrect = assembledWord === currentWord;
+            const formattedAnswer = assembledWord.charAt(0).toUpperCase() + assembledWord.slice(1).toLowerCase();
+            const isCorrect = formattedAnswer === currentWord;
             
             if (isCorrect) {
-                // 正确处理逻���...
+                // 正确处理逻辑...
                 if (!wrongAttempts[currentWord]) {
                     stats.completedWords++;
                     updateStats();
@@ -599,7 +608,7 @@
                 selectedChars.pop();
                 updatePhoneticInput();
                 
-                // 更新按钮状态
+                // ��新按钮状态
                 document.getElementById('submitBtn').disabled = selectedChars.length === 0;
                 document.getElementById('backspaceBtn').disabled = selectedChars.length === 0;
             }

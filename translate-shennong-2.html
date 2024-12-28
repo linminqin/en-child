@@ -174,6 +174,8 @@
             background-color: #bbdefb;
         }
     </style>
+    <script src="js/wordData.js"></script>
+    <script src="js/actions.js"></script>
 </head>
 <body>
     <div class="stats">
@@ -199,29 +201,6 @@
     </div>
 
     <script>
-        const wordData = {
-            'divine': ['/dɪˈvaɪn/', '神的'],
-            'the god of the Divine Farmer': ['/ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə/', '神农帝'],
-            'farm': ['/fɑːm/', '种田'],
-            'because of': ['/bɪˈkɒz ɒv/', '由于'],
-            'survive': ['/səˈvaɪv/', '生存'],
-            'starvation': ['/stɑːˈveɪʃn/', '饥饿'],
-            'gradually': ['/ˈɡrædʒuəli/', '逐渐地'],
-            'develop': ['/dɪˈveləp/', '发展'],
-            'agriculture': ['/ˈæɡrɪkʌltʃə/', '农业'],
-            'even though': ['/ˈiːvn ðəʊ/', '即使'],
-            'no longer': ['/nəʊ ˈlɒŋɡə/', '不再'],
-            'in short supply': ['/ɪn ʃɔːt səˈplaɪ/', '供应不足'],
-            'receive': ['/rɪˈsiːv/', '收到'],
-            'medical': ['/ˈmedɪkl/', '医学的'],
-            'treatment': ['/ˈtriːtmənt/', '治疗'],
-            'medication': ['/ˌmedɪˈkeɪʃn/', '药物'],
-            'scarce': ['/skeəs/', '缺乏的'],
-            'Be worried about': ['/bi ˈwʌrid əˈbaʊt/', '担心'],
-            'believe': ['/bɪˈliːv/', '相信'],
-            'He didn\'t believe in': ['/hi dɪdnt bɪˈliːv ɪn/', '他不相信']
-        };
-
         let remainingWords = Object.keys(wordData);
         let currentWord = '';
         let selectedPhonetic = null;
@@ -466,53 +445,6 @@
                 overlay.remove();
                 location.reload();
             };
-        }
-
-        function speak(text) {
-            try {
-                // 确保语音合成已初始化
-                if (!window.speechSynthesis) {
-                    console.error('Speech synthesis not supported');
-                    return;
-                }
-                
-                // 移除音标中的方括号和其他特殊字符
-                const cleanText = text.replace(/[\[\]]/g, '').replace(/ˈ|ˌ/g, '');
-                
-                // 取消所有正在进行的发音
-                window.speechSynthesis.cancel();
-                
-                // 创建新的发音请求
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'en-US';
-                // 获取所有可用的语音
-                const voices = window.speechSynthesis.getVoices();
-                // 按优先级选择男声
-                const voice = voices.find(v => 
-                    v.name.includes('Google US English Male') ||  // Android 美式男声
-                    v.name.includes('Microsoft David') ||     // Windows 男声
-                    v.name.includes('Alex') ||               // Mac 男声
-                    v.name.includes('Male') ||              // 其他男声
-                    v.name.includes('英语') ||              // 中文系统的英语声音
-                    v.lang.startsWith('en-')               // 任何英语声音
-                );
-                if (voice) {
-                    utterance.voice = voice;
-                }
-                utterance.rate = 0.9;  // 稍微慢一点的语速
-                utterance.volume = 1;
-                utterance.pitch = 0.9;  // 稍微低一点的音调
-                
-                // 添加错误处理
-                utterance.onerror = (event) => {
-                    console.error('Speech synthesis error:', event);
-                };
-                
-                // 尝试播放
-                window.speechSynthesis.speak(utterance);
-            } catch (error) {
-                console.error('Speech synthesis error:', error);
-            }
         }
 
         // 初始化

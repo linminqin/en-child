@@ -129,10 +129,34 @@
         }
 
         #phoneticColumn .word-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-right: 40px; /* 为喇叭图标留出空间 */
+            position: relative;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .speaker-icon {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #2196F3;
+            font-size: 16px;
+            padding: 8px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* 移动端适配时的样式调整 */
+        @media screen and (max-width: 768px) {
+            #phoneticColumn .word-item {
+                padding-right: 30px;
+            }
+            
+            .speaker-icon {
+                padding: 4px;
+                font-size: 14px;
+            }
         }
 
         .stats {
@@ -157,8 +181,11 @@
         .stats .number {
             transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
             display: inline-block;
-            padding: 0 5px;
+            padding: 2px 8px;
             font-weight: 600;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+            color: #1976D2;
         }
 
         #successRate.number {
@@ -173,6 +200,7 @@
         .stats .number.highlight {
             transform: scale(1.3);
             color: #1976D2;
+            background-color: #bbdefb;
         }
 
         #successRate.number.highlight {
@@ -186,9 +214,12 @@
             margin-top: 70px;
         }
     </style>
+    <script src="js/wordData.js"></script>
+    <script src="js/actions.js"></script>
 </head>
 <body>
     <div class="stats">
+        <span>单词总数: <span id="totalWords" class="number">41</span></span>
         <span>成功: <span id="successCount" class="number">0</span></span>
         <span>失败: <span id="failCount" class="number">0</span></span>
         <span>成功率: <span id="successRate" class="number">0%</span></span>
@@ -197,8 +228,8 @@
     <div class="container">
         <div class="column" id="englishColumn">
             <div class="word-item" data-word="divine">divine</div>
-            <div class="word-item" data-word="the god of the Divine Farmer">the god of the "Divine Farmer"</div>
-            <div class="word-item" data-word="farm">farm (v.)</div>
+            <div class="word-item" data-word="the god of the Divine Farmer">the god of the Divine Farmer</div>
+            <div class="word-item" data-word="farm">farm</div>
             <div class="word-item" data-word="because of">because of</div>
             <div class="word-item" data-word="survive">survive</div>
             <div class="word-item" data-word="starvation">starvation</div>
@@ -213,31 +244,73 @@
             <div class="word-item" data-word="treatment">treatment</div>
             <div class="word-item" data-word="medication">medication</div>
             <div class="word-item" data-word="scarce">scarce</div>
-            <div class="word-item" data-word="Be worried about">Be worried about</div>
+            <div class="word-item" data-word="be worried about">be worried about</div>
             <div class="word-item" data-word="believe">believe</div>
-            <div class="word-item" data-word="He didn't believe in">He didn't believe in</div>
+            <div class="word-item" data-word="sorcery">sorcery</div>
+            <div class="word-item" data-word="be able to">be able to</div>
+            <div class="word-item" data-word="practice medicine">practice medicine</div>
+            <div class="word-item" data-word="pass by">pass by</div>
+            <div class="word-item" data-word="province">province</div>
+            <div class="word-item" data-word="varieties of">varieties of</div>
+            <div class="word-item" data-word="herbs">herbs</div>
+            <div class="word-item" data-word="realize">realize</div>
+            <div class="word-item" data-word="serve as">serve as</div>
+            <div class="word-item" data-word="medicinal">medicinal</div>
+            <div class="word-item" data-word="value">value</div>
+            <div class="word-item" data-word="effort">effort</div>
+            <div class="word-item" data-word="a variety of">a variety of</div>
+            <div class="word-item" data-word="routinely">routinely</div>
+            <div class="word-item" data-word="health care">health care</div>
+            <div class="word-item" data-word="knowledge">knowledge</div>
+            <div class="word-item" data-word="was handed down">was handed down</div>
+            <div class="word-item" data-word="oral tradition">oral tradition</div>
+            <div class="word-item" data-word="centuries">centuries</div>
+            <div class="word-item" data-word="in a formal manner">in a formal manner</div>
+            <div class="word-item" data-word="was named after">was named after</div>
+            <div class="word-item" data-word="known as">known as</div>
         </div>
         <div class="column" id="phoneticColumn">
-            <div class="word-item" data-word="[dɪˈvaɪn]">/dɪˈvaɪn/</div>
-            <div class="word-item" data-word="[ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə]">/ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə/</div>
-            <div class="word-item" data-word="[fɑːm]">/fɑːm/</div>
-            <div class="word-item" data-word="[bɪˈkɒz ɒv]">/bɪˈkɒz ɒv/</div>
-            <div class="word-item" data-word="[səˈvaɪv]">/səˈvaɪv/</div>
-            <div class="word-item" data-word="[stɑːˈveɪʃn]">/stɑːˈveɪʃn/</div>
-            <div class="word-item" data-word="[ˈɡrædʒuəli]">/ˈɡrædʒuəli/</div>
-            <div class="word-item" data-word="[dɪˈveləp]">/dɪˈveləp/</div>
-            <div class="word-item" data-word="[ˈæɡrɪkʌltʃə]">/ˈæɡrɪkʌltʃə/</div>
-            <div class="word-item" data-word="[ˈiːvn ðəʊ]">/ˈiːvn ðəʊ/</div>
-            <div class="word-item" data-word="[nəʊ ˈlɒŋɡə]">/nəʊ ˈlɒŋɡə/</div>
-            <div class="word-item" data-word="[ɪn ʃɔːt səˈplaɪ]">/ɪn ʃɔːt səˈplaɪ/</div>
-            <div class="word-item" data-word="[rɪˈsiːv]">/rɪˈsiːv/</div>
-            <div class="word-item" data-word="[ˈmedɪkl]">/ˈmedɪkl/</div>
-            <div class="word-item" data-word="[ˈtriːtmənt]">/ˈtriːtmənt/</div>
-            <div class="word-item" data-word="[ˌmedɪˈkeɪʃn]">/ˌmedɪˈkeɪʃn/</div>
-            <div class="word-item" data-word="[skeəs]">/skeəs/</div>
-            <div class="word-item" data-word="[bi ˈwʌrid əˈbaʊt]">/bi ˈwʌrid əˈbaʊt/</div>
-            <div class="word-item" data-word="[bɪˈliːv]">/bɪˈliːv/</div>
-            <div class="word-item" data-word="[hi dɪdnt bɪˈliːv ɪn]">/hi dɪdnt bɪˈliːv ɪn/</div>
+            <div class="word-item" data-word="/dɪˈvaɪn/">/dɪˈvaɪn/</div>
+            <div class="word-item" data-word="/ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə/">/ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə/</div>
+            <div class="word-item" data-word="/fɑːm/">/fɑːm/</div>
+            <div class="word-item" data-word="/bɪˈkɒz ɒv/">/bɪˈkɒz ɒv/</div>
+            <div class="word-item" data-word="/səˈvaɪv/">/səˈvaɪv/</div>
+            <div class="word-item" data-word="/stɑːˈveɪʃn/">/stɑːˈveɪʃn/</div>
+            <div class="word-item" data-word="/ˈɡrædʒuəli/">/ˈɡrædʒuəli/</div>
+            <div class="word-item" data-word="/dɪˈveləp/">/dɪˈveləp/</div>
+            <div class="word-item" data-word="/ˈæɡrɪkʌltʃə/">/ˈæɡrɪkʌltʃə/</div>
+            <div class="word-item" data-word="/ˈiːvn ðəʊ/">/ˈiːvn ðəʊ/</div>
+            <div class="word-item" data-word="/nəʊ ˈlɒŋɡə/">/nəʊ ˈlɒŋɡə/</div>
+            <div class="word-item" data-word="/ɪn ʃɔːt səˈplaɪ/">/ɪn ʃɔːt səˈplaɪ/</div>
+            <div class="word-item" data-word="/rɪˈsiːv/">/rɪˈsiːv/</div>
+            <div class="word-item" data-word="/ˈmedɪkl/">/ˈmedɪkl/</div>
+            <div class="word-item" data-word="/ˈtriːtmənt/">/ˈtriːtmənt/</div>
+            <div class="word-item" data-word="/ˌmedɪˈkeɪʃn/">/ˌmedɪˈkeɪʃn/</div>
+            <div class="word-item" data-word="/skeəs/">/skeəs/</div>
+            <div class="word-item" data-word="/bi ˈwʌrid əˈbaʊt/">/bi ˈwʌrid əˈbaʊt/</div>
+            <div class="word-item" data-word="/bɪˈliːv/">/bɪˈliːv/</div>
+            <div class="word-item" data-word="/ˈsɔːsəri/">/ˈsɔːsəri/</div>
+            <div class="word-item" data-word="/bi ˈeɪbl tuː/">/bi ˈeɪbl tuː/</div>
+            <div class="word-item" data-word="/ˈpræktɪs ˈmedɪsn/">/ˈpræktɪs ˈmedɪsn/</div>
+            <div class="word-item" data-word="/pɑːs baɪ/">/pɑːs baɪ/</div>
+            <div class="word-item" data-word="/ˈprɒvɪns/">/ˈprɒvɪns/</div>
+            <div class="word-item" data-word="/vəˈraɪətiz ɒv/">/vəˈraɪətiz ɒv/</div>
+            <div class="word-item" data-word="/hɜːbz/">/hɜːbz/</div>
+            <div class="word-item" data-word="/ˈrɪəlaɪz/">/ˈrɪəlaɪz/</div>
+            <div class="word-item" data-word="/sɜːv æz/">/sɜːv æz/</div>
+            <div class="word-item" data-word="/məˈdɪsɪnl/">/məˈdɪsɪnl/</div>
+            <div class="word-item" data-word="/ˈvæljuː/">/ˈvæljuː/</div>
+            <div class="word-item" data-word="/ˈefət/">/ˈefət/</div>
+            <div class="word-item" data-word="/ə vəˈraɪəti ɒv/">/ə vəˈraɪəti ɒv/</div>
+            <div class="word-item" data-word="/ruːˈtiːnli/">/ruːˈtiːnli/</div>
+            <div class="word-item" data-word="/helθ keə/">/helθ keə/</div>
+            <div class="word-item" data-word="/ˈnɒlɪdʒ/">/ˈnɒlɪdʒ/</div>
+            <div class="word-item" data-word="/wɒz ˈhændɪd daʊn/">/wɒz ˈhændɪd daʊn/</div>
+            <div class="word-item" data-word="/ˈɔːrəl trəˈdɪʃn/">/ˈɔːrəl trəˈdɪʃn/</div>
+            <div class="word-item" data-word="/ˈsentʃəriz/">/ˈsentʃəriz/</div>
+            <div class="word-item" data-word="/ɪn ə ˈfɔːml ˈmænə/">/ɪn ə ˈfɔːml ˈmænə/</div>
+            <div class="word-item" data-word="/wɒz neɪmd ˈɑːftə/">/wɒz neɪmd ˈɑːftə/</div>
+            <div class="word-item" data-word="/nəʊn æz/">/nəʊn æz/</div>
         </div>
         <div class="column" id="chineseColumn">
             <div class="word-item" data-word="神的">神的</div>
@@ -255,39 +328,37 @@
             <div class="word-item" data-word="收到">收到</div>
             <div class="word-item" data-word="医学的">医学的</div>
             <div class="word-item" data-word="治疗">治疗</div>
-            <div class="word-item" data-word="药物">药</div>
+            <div class="word-item" data-word="药物">药物</div>
             <div class="word-item" data-word="缺乏的">缺乏的</div>
             <div class="word-item" data-word="担心">担心</div>
             <div class="word-item" data-word="相信">相信</div>
-            <div class="word-item" data-word="他不相信">他不相信</div>
+            <div class="word-item" data-word="魔��，巫术">魔术，巫术</div>
+            <div class="word-item" data-word="能够">能够</div>
+            <div class="word-item" data-word="从事医学实践">从事医学实践</div>
+            <div class="word-item" data-word="走过">走过</div>
+            <div class="word-item" data-word="省份">省份</div>
+            <div class="word-item" data-word="各种各样的">各种各样的</div>
+            <div class="word-item" data-word="药草">药草</div>
+            <div class="word-item" data-word="意识到">意识到</div>
+            <div class="word-item" data-word="对~起作用">对~起作用</div>
+            <div class="word-item" data-word="药用的；有疗效的">药用的；有疗效的</div>
+            <div class="word-item" data-word="价值">价值</div>
+            <div class="word-item" data-word="努力">努力</div>
+            <div class="word-item" data-word="各种各样的">各种各样的</div>
+            <div class="word-item" data-word="毫无意外地">毫无意外地</div>
+            <div class="word-item" data-word="健康治疗">健康治疗</div>
+            <div class="word-item" data-word="知识">知识</div>
+            <div class="word-item" data-word="传承下来的">传承下来的</div>
+            <div class="word-item" data-word="口头传统">口头传统</div>
+            <div class="word-item" data-word="世纪">世纪</div>
+            <div class="word-item" data-word="用正常的方式">用正常的方式</div>
+            <div class="word-item" data-word="以~命名">以~命名</div>
+            <div class="word-item" data-word="被认为是">被认为是</div>
         </div>
     </div>
     <button id="resetBtn">重置</button>
 
     <script>
-        const answers = {
-            'divine': ['/dɪˈvaɪn/', '神的'],
-            'the god of the Divine Farmer': ['/ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə/', '神农帝'],
-            'farm': ['/fɑːm/', '种田'],
-            'because of': ['/bɪˈkɒz ɒv/', '由于'],
-            'survive': ['/səˈvaɪv/', '生存'],
-            'starvation': ['/stɑːˈveɪʃn/', '饥饿'],
-            'gradually': ['/ˈɡrædʒuəli/', '逐渐地'],
-            'develop': ['/dɪˈveləp/', '发展'],
-            'agriculture': ['/ˈæɡrɪkʌltʃə/', '农业'],
-            'even though': ['/ˈiːvn ðəʊ/', '即使'],
-            'no longer': ['/nəʊ ˈlɒŋɡə/', '不再'],
-            'in short supply': ['/ɪn ʃɔːt səˈplaɪ/', '供应不足'],
-            'receive': ['/rɪˈsiːv/', '收到'],
-            'medical': ['/ˈmedɪkl/', '医学的'],
-            'treatment': ['/ˈtriːtmənt/', '治疗'],
-            'medication': ['/ˌmedɪˈkeɪʃn/', '药物'],
-            'scarce': ['/skeəs/', '缺乏的'],
-            'Be worried about': ['/bi ˈwʌrid əˈbaʊt/', '担心'],
-            'believe': ['/bɪˈliːv/', '相信'],
-            'He didn\'t believe in': ['/hi dɪdnt bɪˈliːv ɪn/', '他不相信']
-        };
-
         let selectedItems = {
             english: null,
             phonetic: null,
@@ -318,8 +389,8 @@
         });
 
         function handleItemClick(e) {
-            const item = e.target;
-            if (item.classList.contains('matched')) {
+            const item = e.target.closest('.word-item');
+            if (!item || item.classList.contains('matched')) {
                 return;
             }
 
@@ -334,22 +405,20 @@
 
             // 如果是音标列，自动发音
             if (columnType === 'phonetic') {
-                const phoneticWord = item.dataset.word.replace('[', '/').replace(']', '/');
-                for (const [key, value] of Object.entries(answers)) {
+                const phoneticWord = item.dataset.word;
+                for (const [key, value] of Object.entries(wordData)) {
                     if (value[0] === phoneticWord) {
-                        speak(key.replace(/["']/g, ''));
+                        speak(key);
                         break;
                     }
                 }
             }
 
-            // 切换项的选中状态
+            // 切换选中状态
             if (item === currentSelected) {
-                // 如果点击的是当前选中的项，取消选中
                 item.classList.remove('selected');
                 selectedItems[columnType] = null;
             } else {
-                // 否则选中新项
                 item.classList.add('selected');
                 selectedItems[columnType] = item;
             }
@@ -393,12 +462,14 @@
         function checkMatch() {
             if (selectedItems.english && selectedItems.phonetic && selectedItems.chinese) {
                 const englishWord = selectedItems.english.dataset.word;
-                const phoneticWord = selectedItems.phonetic.dataset.word.replace('[', '/').replace(']', '/');
+                const phoneticWord = selectedItems.phonetic.dataset.word;
                 const chineseWord = selectedItems.chinese.dataset.word;
 
-                if (answers[englishWord] && 
-                    answers[englishWord][0] === phoneticWord && 
-                    answers[englishWord][1] === chineseWord) {
+                // 使用 wordData 检查匹配
+                if (wordData[englishWord] && 
+                    wordData[englishWord][0] === phoneticWord && 
+                    wordData[englishWord][1] === chineseWord) {
+                    // 匹配成功
                     successCount++;
                     updateStats();
                     
@@ -409,6 +480,7 @@
                         }
                     });
 
+                    // 标记匹配的项
                     [selectedItems.english, selectedItems.phonetic, selectedItems.chinese].forEach(item => {
                         item.classList.remove('selected');
                         item.classList.add('matched');
@@ -436,7 +508,6 @@
                         document.querySelectorAll('#englishColumn .word-item').forEach(item => {
                             const count = attemptCounts.get(item) || 0;
                             if (count > 1) {  // 如果尝试次数大于1，说明有失败
-                                // 移除可能存在的尝试次数显示，只保留单词本身
                                 const wordText = item.textContent.replace(/\s*\d+$/, '').trim();
                                 failedWordsMap.set(wordText, count);
                             }
@@ -472,13 +543,14 @@
                             overflow-y: auto;
                         `;
                         document.body.appendChild(celebration);
-                        setTimeout(() => celebration.remove(), 10000);  // 增加显示时间到10秒
+                        setTimeout(() => celebration.remove(), 10000);
                     }
                 } else {
+                    // 匹配失败
                     failCount++;
                     updateStats();
                     
-                    // 更新尝试次数
+                    // 更新尝试次数（失败时）
                     [selectedItems.english, selectedItems.phonetic, selectedItems.chinese].forEach(item => {
                         if (item) {
                             updateAttemptCount(item);
@@ -493,6 +565,7 @@
                         chinese: null
                     };
 
+                    // 显示失败提示
                     const tip = document.createElement('div');
                     tip.textContent = '匹配不正确，请重试';
                     tip.style.cssText = `
@@ -521,7 +594,7 @@
             }
         }
 
-        // 页面载时随机排序
+        // ���面载时随机排序
         window.addEventListener('load', () => {
             const columns = document.querySelectorAll('.column');
             columns.forEach(column => shuffleChildren(column));
@@ -581,55 +654,7 @@
             });
         });
 
-        // 创建发音函数
-        function speak(text) {
-            try {
-                // 确保语音合成已初始化
-                if (!window.speechSynthesis) {
-                    console.error('Speech synthesis not supported');
-                    return;
-                }
-                
-                // 移除音标中的方括号和其他特殊字符
-                const cleanText = text.replace(/[\[\]]/g, '').replace(/ˈ|ˌ/g, '');
-                
-                // 取消所有正在进行的发音
-                window.speechSynthesis.cancel();
-                
-                // 创建新的发音请求
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'en-US';
-                // 获取所有可用的语音
-                const voices = window.speechSynthesis.getVoices();
-                // 按优先级选择男声
-                const voice = voices.find(v => 
-                    v.name.includes('Google US English Male') ||  // Android 美式男声
-                    v.name.includes('Microsoft David') ||     // Windows 男声
-                    v.name.includes('Alex') ||               // Mac 男声
-                    v.name.includes('Male') ||              // 其他男声
-                    v.name.includes('英语') ||              // 中文系统的英语声音
-                    v.lang.startsWith('en-')               // 任何英语声音
-                );
-                if (voice) {
-                    utterance.voice = voice;
-                }
-                utterance.rate = 0.9;  // 稍微慢一点的语速
-                utterance.volume = 1;
-                utterance.pitch = 0.9;  // 稍微低一点的音调
-                
-                // 添加错误处理
-                utterance.onerror = (event) => {
-                    console.error('Speech synthesis error:', event);
-                };
-                
-                // 尝试播放
-                window.speechSynthesis.speak(utterance);
-            } catch (error) {
-                console.error('Speech synthesis error:', error);
-            }
-        }
-
-        // 确保语音列已加载
+        // 确保语音列已载
         if (window.speechSynthesis) {
             window.speechSynthesis.onvoiceschanged = () => {
                 const voices = window.speechSynthesis.getVoices();
@@ -673,13 +698,31 @@
                 // 获取包含喇叭图标的格子
                 const wordItem = e.target.closest('.word-item');
                 if (wordItem) {
-                    // 模拟点击格子
+                    // 模���点击格子
                     handleItemClick({ target: wordItem });
                 }
                 // 播放声音
                 const speakText = e.target.closest('.speaker-icon').dataset.speak;
                 speak(speakText);
             }
+        });
+
+        // 修改页面加载时计算单词总数的代码
+        window.addEventListener('load', () => {
+            // 直接设置为当前显示的单词总数
+            document.getElementById('totalWords').textContent = '41';
+            
+            // 其他初始化代码...
+            const columns = document.querySelectorAll('.column');
+            columns.forEach(column => shuffleChildren(column));
+        });
+
+        // 修改重置按钮时显示总数的代码
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            // 直接设置为当前显示的单词总数
+            document.getElementById('totalWords').textContent = '41';
+            
+            // 其他重置代码...
         });
     </script>
 </body>
