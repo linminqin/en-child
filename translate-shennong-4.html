@@ -248,23 +248,8 @@
         <div class="hint-text">错误达到三次，系统会显示正确的音标</div>
     </div>
 
+    <script src="js/wordData-short.js"></script>
     <script>
-        const wordData = {
-            'divine': ['/dɪˈvaɪn/', '神的'],
-            'farm': ['/fɑːm/', '种田'],
-            'survive': ['/səˈvaɪv/', '生存'],
-            'starvation': ['/stɑːˈveɪʃn/', '饥饿'],
-            'gradually': ['/ˈɡrædʒuəli/', '逐渐地'],
-            'develop': ['/dɪˈveləp/', '发展'],
-            'agriculture': ['/ˈæɡrɪkʌltʃə/', '农业'],
-            'receive': ['/rɪˈsiːv/', '收到'],
-            'medical': ['/ˈmedɪkl/', '医学的'],
-            'treatment': ['/ˈtriːtmənt/', '治疗'],
-            'medication': ['/ˌmedɪˈkeɪʃn/', '药'],
-            'scarce': ['/skeəs/', '缺乏的'],
-            'believe': ['/bɪˈliːv/', '相信']
-        };
-
         let remainingWords = Object.keys(wordData);
         let currentWord = '';
         let currentPhonetic = '';

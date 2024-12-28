@@ -99,7 +99,7 @@
             gap: 5px;
             justify-content: center;
             align-items: center;
-            font-size: 32px;
+            font-size: 24px;
         }
 
         .phonetic-chars {
@@ -118,12 +118,13 @@
             background: white;
             transition: all 0.3s ease;
             user-select: none;
-            font-size: 28px;
+            font-size: 24px;
             min-width: 45px;
             min-height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-transform: lowercase;
         }
 
         .char:hover {
@@ -214,6 +215,29 @@
             color: #666;
             font-size: 28px !important;
         }
+
+        .phonetic-input span {
+            font-size: 32px;
+            margin: 0 2px;
+        }
+
+        .phonetic-placeholder {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 添加喇叭图标的样式 */
+        .speaker-icon {
+            cursor: pointer;
+            font-size: 24px;
+            margin: 0 5px;
+            vertical-align: middle;
+            transition: transform 0.2s ease;
+        }
+
+        .speaker-icon:hover {
+            transform: scale(1.2);
+        }
     </style>
 </head>
 <body>
@@ -235,10 +259,11 @@
             <button class="backspace-btn" id="backspaceBtn" disabled>退格</button>
             <button class="submit-btn" id="submitBtn" disabled>提交</button>
         </div>
-        <div class="hint-text">错误达到三次，系统会显示正确的音标</div>
+        <div class="hint-text">错误达到三次，系统会显示正确单词</div>
     </div>
 
-    <script src="js/wordData-short.js"></script>
+    <script src="js/actions.js"></script>
+    <script src="js/word-day.js"></script>
     <script>
         let remainingWords = Object.keys(wordData);
         let currentWord = '';
@@ -255,7 +280,15 @@
 
         // 将标字符串转换为字符数组
         function splitPhonetic(phonetic) {
-            return phonetic.split('').filter(char => char !== ' ');
+            const specialChars = ['ˈ', 'ˌ', 'ː'];
+            let chars = [];
+            
+            for (let char of phonetic) {
+                if (char !== ' ') {
+                    chars.push(char);
+                }
+            }
+            return chars;
         }
 
         function shuffleArray(array) {
@@ -302,28 +335,46 @@
             const randomIndex = Math.floor(Math.random() * remainingWords.length);
             currentWord = remainingWords[randomIndex];
             remainingWords.splice(randomIndex, 1);
-            currentPhonetic = wordData[currentWord][0];
 
-            // 显示单词和翻译
+            // 显示音标、翻译和喇叭标
             const wordDisplay = document.getElementById('currentWord');
-            wordDisplay.innerHTML = `${currentWord} (${wordData[currentWord][1]}) <span id="phoneticHint" style="color: #666; font-size: 0.9em;"></span>`;
+            wordDisplay.innerHTML = `
+                ${wordData[currentWord][0]} 
+                <span class="speaker-icon" onclick="speak('${currentWord}')">🔊</span> 
+                (${wordData[currentWord][1]}) 
+                <span id="phoneticHint" style="color: #666; font-size: 0.9em;"></span>
+            `;
             
             // 清空已选字符
             selectedChars = [];
             updatePhoneticInput();
             
-            // 显示打散的音标字符（去掉前后的/）
-            const chars = splitPhonetic(currentPhonetic.slice(1, -1));
-            const shuffledChars = shuffleArray([...chars]);
+            // 将单词字母打散显示
+            const letters = currentWord.split('');
+            const shuffledLetters = shuffleArray([...letters]);
             
+            // 显示打散的字母，找到原单词中的首字母位置
             const charsContainer = document.getElementById('phoneticChars');
             charsContainer.innerHTML = '';
-            shuffledChars.forEach(char => {
+            shuffledLetters.forEach(letter => {
                 const div = document.createElement('div');
                 div.className = 'char';
-                div.textContent = char;
-                div.onclick = () => selectChar(char, div);
+                // 如果这个字母在原单词中是首字母，就显示大写，否则显示小写
+                const isFirstLetter = letter.toLowerCase() === currentWord.charAt(0).toLowerCase();
+                div.textContent = isFirstLetter ? letter.toUpperCase() : letter.toLowerCase();
+                div.onclick = () => selectChar(letter, div);
                 charsContainer.appendChild(div);
+            });
+
+            // 在输入区域创建占位符时，确保首字母大写，其余小写
+            const inputContainer = document.getElementById('phoneticInput');
+            inputContainer.innerHTML = '';
+            letters.forEach((_, index) => {
+                const span = document.createElement('span');
+                span.className = 'phonetic-placeholder';
+                span.style.minWidth = '20px';
+                span.style.display = 'inline-block';
+                inputContainer.appendChild(span);
             });
 
             document.getElementById('submitBtn').disabled = true;
@@ -352,24 +403,45 @@
 
         function updatePhoneticInput() {
             const inputContainer = document.getElementById('phoneticInput');
-            inputContainer.textContent = selectedChars.join('');
+            inputContainer.innerHTML = '';
+            
+            // 显示已选择的字母，首字母大写，其余小写
+            selectedChars.forEach((char, index) => {
+                const span = document.createElement('span');
+                // 如果是第一个字母则大写，其余小写
+                span.textContent = index === 0 ? char.toUpperCase() : char.toLowerCase();
+                span.className = 'phonetic-placeholder';
+                span.style.minWidth = '20px';
+                span.style.display = 'inline-block';
+                inputContainer.appendChild(span);
+            });
+            
+            // 添加剩余的占位符
+            const remainingPlaceholders = currentWord.length - selectedChars.length;
+            for (let i = 0; i < remainingPlaceholders; i++) {
+                const span = document.createElement('span');
+                span.className = 'phonetic-placeholder';
+                span.style.minWidth = '20px';
+                span.style.display = 'inline-block';
+                inputContainer.appendChild(span);
+            }
         }
 
         function checkAnswer() {
-            // 添加前后的/进行比较
-            const submittedPhonetic = '/' + selectedChars.join('') + '/';
+            // 将用户输入的答案首字母大写，其余小写
+            const assembledWord = selectedChars.join('');
+            const formattedAnswer = assembledWord.charAt(0).toUpperCase() + assembledWord.slice(1).toLowerCase();
+            const isCorrect = formattedAnswer === currentWord;
             
-            if (submittedPhonetic === currentPhonetic) {
-                // 正确
+            if (isCorrect) {
+                // 正确处理逻辑...
                 if (!wrongAttempts[currentWord]) {
                     stats.completedWords++;
                     updateStats();
                 }
                 
-                // 播放正确的发音
                 speak(currentWord);
 
-                // 显示正确提示
                 const feedback = document.createElement('div');
                 feedback.textContent = '正确！';
                 feedback.style.cssText = `
@@ -390,7 +462,7 @@
                     displayNewWord();
                 }, 1000);
             } else {
-                // 错误
+                // 错误处理逻辑
                 if (!wrongAttempts[currentWord]) {
                     wrongAttempts[currentWord] = 0;
                     stats.wrongWords++;
@@ -398,10 +470,10 @@
                 }
                 wrongAttempts[currentWord]++;
 
-                // 如果连续错误三次，显示正确音标
+                // 如果连续错误三次，显示正确单词
                 if (wrongAttempts[currentWord] % 3 === 0) {
                     const phoneticHint = document.getElementById('phoneticHint');
-                    phoneticHint.textContent = currentPhonetic;
+                    phoneticHint.textContent = ` (正确答案: ${currentWord})`;
                 }
 
                 // 显示错误提示
@@ -429,6 +501,7 @@
                         el.classList.remove('selected');
                     });
                     document.getElementById('submitBtn').disabled = true;
+                    document.getElementById('backspaceBtn').disabled = true;
                 }, 1000);
             }
         }
@@ -505,53 +578,6 @@
             };
         }
 
-        function speak(text) {
-            try {
-                // 确保语音合成已初始化
-                if (!window.speechSynthesis) {
-                    console.error('Speech synthesis not supported');
-                    return;
-                }
-                
-                // 移除音标中的方括号和其他��殊字符
-                const cleanText = text.replace(/[\[\]]/g, '').replace(/ˈ|ˌ/g, '');
-                
-                // 取消所有正在进行的发音
-                window.speechSynthesis.cancel();
-                
-                // 创建新的发音请求
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'en-US';
-                // 获取所有可用的语音
-                const voices = window.speechSynthesis.getVoices();
-                // 按优先级选择男声
-                const voice = voices.find(v => 
-                    v.name.includes('Google US English Male') ||  // Android 美式男声
-                    v.name.includes('Microsoft David') ||     // Windows 男声
-                    v.name.includes('Alex') ||               // Mac 男声
-                    v.name.includes('Male') ||              // 其他男声
-                    v.name.includes('英语') ||              // 中文系统的英语声音
-                    v.lang.startsWith('en-')               // 任何英语声音
-                );
-                if (voice) {
-                    utterance.voice = voice;
-                }
-                utterance.rate = 0.9;  // 稍微慢一点的语速
-                utterance.volume = 1;
-                utterance.pitch = 0.9;  // 稍微低一点的音调
-                
-                // 添加错误处理
-                utterance.onerror = (event) => {
-                    console.error('Speech synthesis error:', event);
-                };
-                
-                // 尝试播放
-                window.speechSynthesis.speak(utterance);
-            } catch (error) {
-                console.error('Speech synthesis error:', error);
-            }
-        }
-
         // 初始化
         displayNewWord();
         updateStats();
@@ -562,17 +588,25 @@
         // 添加退格按钮事件监听
         document.getElementById('backspaceBtn').addEventListener('click', () => {
             if (selectedChars.length > 0) {
-                // 找到最后一个选中的元素
-                const selectedElements = document.querySelectorAll('.char.selected');
-                const lastElement = selectedElements[selectedElements.length - 1];
-                if (lastElement) {
-                    lastElement.classList.remove('selected');
-                    selectedChars.pop();
-                    updatePhoneticInput();
-                    // 更新按钮状态
-                    document.getElementById('submitBtn').disabled = selectedChars.length === 0;
-                    document.getElementById('backspaceBtn').disabled = selectedChars.length === 0;
+                // 获取最后选择的字符
+                const lastChar = selectedChars[selectedChars.length - 1];
+                
+                // 找到所有显示该字符且被选中的字母格子
+                const selectedElements = Array.from(document.querySelectorAll('.char.selected'))
+                    .filter(el => el.textContent === lastChar);
+                
+                // 如果找到了匹配的元素，移除最后一个的选中状态
+                if (selectedElements.length > 0) {
+                    selectedElements[selectedElements.length - 1].classList.remove('selected');
                 }
+                
+                // 移除最后一个选中的字符
+                selectedChars.pop();
+                updatePhoneticInput();
+                
+                // 更新按钮状态
+                document.getElementById('submitBtn').disabled = selectedChars.length === 0;
+                document.getElementById('backspaceBtn').disabled = selectedChars.length === 0;
             }
         });
     </script>
