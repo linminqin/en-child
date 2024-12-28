@@ -6,17 +6,50 @@
     <title>首页</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
             min-height: 100vh;
             margin: 0;
             background-color: #f5f5f5;
             font-family: "Microsoft YaHei", sans-serif;
-            gap: 20px;
-            flex-wrap: wrap;
+            padding-top: 20px;
+        }
+
+        .tab-container {
+            max-width: 1000px;
+            margin: 0 auto;
             padding: 20px;
-            align-content: flex-start;
-            padding-top: 50px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 30px;
+            background-color: #ddd;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background-color: white;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .container {
@@ -24,7 +57,6 @@
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
-            max-width: 1000px;
         }
 
         a {
@@ -49,8 +81,7 @@
 
         /* 移动端适配 */
         @media (max-width: 768px) {
-            body {
-                gap: 10px;
+            .tab-container {
                 padding: 10px;
             }
 
@@ -63,16 +94,58 @@
                 font-size: 16px;
                 width: calc(100% - 20px);
             }
+
+            .tab {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="translate-shennong.html">神农：全部配对</a>
-        <a href="translate-shennong-2.html">神农：单个配对</a>
-        <a href="translate-shennong-3.html">神农：根据单词拼装音标</a>
-        <a href="translate-shennong-4.html">神农：根据单词拼装音标（忽略特殊音标）</a>
-        <a href="translate-shennong-5.html">神农：根据音标拼装单词</a>
+    <div class="tab-container">
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'tab1')">神农</button>
+            <button class="tab" onclick="openTab(event, 'tab2')">日期</button>
+        </div>
+
+        <div id="tab1" class="tab-content active">
+            <div class="container">
+                <a href="translate-shennong.html">神农：全部配对</a>
+                <a href="translate-shennong-2.html">神农：单个配对</a>
+                <a href="translate-shennong-3.html">神农：根据单词拼装音标</a>
+                <a href="translate-shennong-4.html">神农：根据单词拼装音标（忽略特殊音标）</a>
+                <a href="translate-shennong-5.html">神农：根据音标拼装单词</a>
+            </div>
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <div class="container">
+                <a href="translate-day.html">星期&月：根据音标拼单词</a>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabContent, tabLinks;
+            
+            // 隐藏所有标签页内容
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].classList.remove("active");
+            }
+
+            // 移除所有标签的活动状态
+            tabLinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].classList.remove("active");
+            }
+
+            // 显示当前标签页并设置为活动状态
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
 </body>
 </html> 
