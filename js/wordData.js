@@ -1,0 +1,22 @@
+const wordData = {
+    'divine': ['/dɪˈvaɪn/', '神的'],
+    'the god of the Divine Farmer': ['/ðə ɡɒd ɒv ðə dɪˈvaɪn ˈfɑːmə/', '神农帝'],
+    'farm': ['/fɑːm/', '种田'],
+    'because of': ['/bɪˈkɒz ɒv/', '由于'],
+    'survive': ['/səˈvaɪv/', '生存'],
+    'starvation': ['/stɑːˈveɪʃn/', '饥饿'],
+    'gradually': ['/ˈɡrædʒuəli/', '逐渐地'],
+    'develop': ['/dɪˈveləp/', '发展'],
+    'agriculture': ['/ˈæɡrɪkʌltʃə/', '农业'],
+    'even though': ['/ˈiːvn ðəʊ/', '即使'],
+    'no longer': ['/nəʊ ˈlɒŋɡə/', '不再'],
+    'in short supply': ['/ɪn ʃɔːt səˈplaɪ/', '供应不足'],
+    'receive': ['/rɪˈsiːv/', '收到'],
+    'medical': ['/ˈmedɪkl/', '医学的'],
+    'treatment': ['/ˈtriːtmənt/', '治疗'],
+    'medication': ['/ˌmedɪˈkeɪʃn/', '药'],
+    'scarce': ['/skeəs/', '缺乏的'],
+    'Be worried about': ['/bi ˈwʌrid əˈbaʊt/', '担心'],
+    'believe': ['/bɪˈliːv/', '相信'],
+    'He didn\'t believe in': ['/hi dɪdnt bɪˈliːv ɪn/', '他不相信']
+}; 
