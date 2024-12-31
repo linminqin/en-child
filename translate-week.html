@@ -355,6 +355,15 @@
             
             // 将单词字母打散显示
             const letters = currentWord.split('');
+            
+            // 添加3-5个随机字符
+            const extraChars = 'abcdefghijklmnopqrstuvwxyz';
+            const numExtra = Math.floor(Math.random() * 3) + 3; // 随机生成3-5
+            for (let i = 0; i < numExtra; i++) {
+                const randomChar = extraChars[Math.floor(Math.random() * extraChars.length)];
+                letters.push(randomChar);
+            }
+            
             const shuffledLetters = shuffleArray([...letters]);
             
             // 显示打散的字母，找到原单词中的首字母位置
@@ -388,7 +397,7 @@
             if (element.classList.contains('selected')) {
                 // 取消选择
                 element.classList.remove('selected');
-                // 找���当前字符在selectedChars中的位置并移除
+                // 找到当前字符在selectedChars中的位置并移除
                 const charToRemove = element.textContent;
                 const index = selectedChars.findIndex(c => 
                     c.toLowerCase() === charToRemove.toLowerCase()
@@ -612,7 +621,7 @@
                 selectedChars.pop();
                 updatePhoneticInput();
                 
-                // ��新按钮状态
+                // 更新按钮状态
                 document.getElementById('submitBtn').disabled = selectedChars.length === 0;
                 document.getElementById('backspaceBtn').disabled = selectedChars.length === 0;
             }
