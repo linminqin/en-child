@@ -27,8 +27,8 @@ function displayNewEnWord() {
     const letters = currentWord.split('');
     // 添加元音字母
     letters.push('a', 'e', 'i', 'o', 'u', 'y');
-    // 添加3-5个随机字符
-    const extraChars = 'abcdefghijklmnopqrstuvwxyz';
+    // 添加3-5个随机辅音字符
+    const extraChars = 'bcdfghjklmnpqrstvwxz';
     const numExtra = Math.floor(Math.random() * 3) + 3; // 随机生成3-5
     for (let i = 0; i < numExtra; i++) {
         const randomChar = extraChars[Math.floor(Math.random() * extraChars.length)];
