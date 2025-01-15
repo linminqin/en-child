@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 禁止缓存 -->
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="expires" content="0">
     <title>音标拼装练习</title>
     <style>
         * {
@@ -248,7 +252,7 @@
         <div class="hint-text">错误达到三次，系统会显示正确的音标</div>
     </div>
 
-    <script src="js/word-day.js"></script>
+    <script src="js/word-month.js"></script>
     <script src="js/actions.js"></script>
     <script>
         let remainingWords = Object.keys(wordData);

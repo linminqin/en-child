@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 禁止缓存 -->
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="expires" content="0">
     <title>首页</title>
     <style>
         body {
@@ -108,15 +112,16 @@
             <button class="tab active" onclick="openTab(event, 'tab1')">神农</button>
             <button class="tab" onclick="openTab(event, 'tab2')">日期</button>
             <button class="tab" onclick="openTab(event, 'tab3')">其他</button>
+            <button class="tab" onclick="openTab(event, 'tab4')">KET</button>
         </div>
 
         <div id="tab1" class="tab-content active">
             <div class="container">
-                <a href="translate-shennong.html">神农：全部配对</a>
-                <a href="translate-shennong-2.html">神农：单个配对</a>
-                <a href="translate-shennong-3.html">神农：根据单词拼装音标</a>
-                <a href="translate-shennong-4.html">神农：根据单词拼装音标（忽略特殊音标）</a>
-                <a href="translate-shennong-5.html">神农：根据音标拼装单词</a>
+                <a href="translate-shennong.html">全部配对</a>
+                <a href="translate-shennong-2.html">选音标和翻译</a>
+                <a href="translate-shennong-3.html">根据单词拼装音标</a>
+                <a href="translate-shennong-4.html">根据单词拼装音标（忽略特殊音标）</a>
+                <a href="translate-shennong-5.html">根据音标拼装单词</a>
             </div>
         </div>
 
@@ -133,6 +138,12 @@
             <div class="container">
                 <a href="translate-number.html">数字：根据音标拼单词</a>
                 <a href="translate-weather.html">天气：根据音标拼单词</a>
+            </div>
+        </div>
+
+        <div id="tab4" class="tab-content">
+            <div class="container">
+                <a href="translate-ket.html">选音标和翻译</a>
             </div>
         </div>
     </div>
