@@ -17,7 +17,7 @@ const wordData = {
     'entrance': ['/ˈentrəns/', '入口'],
     'contact': ['/ˈkɒntækt/', '联系'],
     'difficult': ['/ˈdɪfɪkəlt/', '困难的'],
-    'closet': ['/ˈklɒzɪt/', '橱'],
+    'closet': ['/ˈklɒzɪt/', '橱柜'],
     'fast': ['/fɑːst/', '迅速的'],
     'poster': ['/ˈpəʊstə(r)/', '海报'],
     'down': ['/daʊn/', '向下'],

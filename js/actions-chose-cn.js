@@ -1,3 +1,4 @@
+// 数组随机排序
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -5,6 +6,7 @@ function shuffleArray(array) {
     }
     return array;
 }
+
 
 function getRandomOptions(correctAnswer, allAnswers, count = 4) {
     const options = [];  // 初始化空数组
@@ -61,7 +63,7 @@ function updateStats() {
 }
 
 function displayNewWord() {
-    if (remainingWords.length === 0) {
+    if (remainingWords.length === 0 || stats.completedWords > targetWordCount) {
         showCompletionMessage();
         return;
     }
@@ -170,10 +172,13 @@ function checkAnswer() {
             }
         });
 
+        // 如果是音标选择，且选择了"以上都不对"选项
+        if(selectedPhonetic === "以上都不对" && currentWord) {
+            speak(currentWord);
+        }
         // 判断是否有选择"以上都不对"
         const hasSelectedNone = selectedPhonetic === "以上都不对" || selectedTranslation === "以上都不对";
-        const delay = hasSelectedNone ? 3000 : 1000;  // 如果选择了"以上都不对"，等待3秒，否则等待1秒
-
+        const delay = hasSelectedNone ? 3000 : 1000;  // 如果选择了"以上都不对"，等待3秒，否则等待1秒    
         setTimeout(() => {
             displayNewWord();
         }, delay);
@@ -270,3 +275,34 @@ function showCompletionMessage() {
         location.reload();
     };
 }
+        // 显示初始弹窗
+        window.onload = function() {
+            const modal = document.getElementById('startModal');
+            const maxWordsSpan = document.getElementById('maxWords');
+            const totalWords = Object.keys(wordData).length;
+            maxWordsSpan.textContent = totalWords;
+            modal.style.display = 'block';
+        };
+
+        // 开始测试
+        function startTest() {
+            const input = document.getElementById('wordCount');
+            const errorMessage = document.getElementById('errorMessage');
+            const totalWords = Object.keys(wordData).length;
+            const count = parseInt(input.value);
+
+            if (isNaN(count) || count < 10 || count > totalWords) {
+                errorMessage.textContent = `请输入10到${totalWords}之间的数字`;
+                return;
+            }
+
+            targetWordCount = count;
+            // 随机选择指定数量的单词
+            const allWords = Object.keys(wordData);
+            remainingWords = shuffleArray(allWords).slice(0, count);
+            stats.totalWords = count;
+
+            document.getElementById('startModal').style.display = 'none';
+            displayNewWord();
+            updateStats();
+        }
