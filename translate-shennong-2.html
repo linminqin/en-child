@@ -177,12 +177,87 @@
         #successRate.highlight {
             background-color: #bbdefb;
         }
+
+        /* 添加弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .modal input {
+            margin: 10px 0;
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal button {
+            padding: 8px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal button:hover {
+            background-color: #1976D2;
+        }
+
+        .error-message {
+            color: #f44336;
+            margin-top: 10px;
+            font-size: 14px;
+        }
     </style>
     <script src="js/wordData.js"></script>
     <script src="js/actions.js"></script>
     <script src="js/actions-chose-cn.js"></script>
 </head>
 <body>
+    <!-- 添加输入弹窗 -->
+    <div id="startModal" class="modal">
+        <div class="modal-content">
+            <h3>请输入要测试的单词数量</h3>
+            <p>（最少10个，最多<span id="maxWords">0</span>个）</p>
+            <input type="number" id="wordCount" min="10">
+            <div id="errorMessage" class="error-message"></div>
+            <button onclick="startTest()">开始测试</button>
+        </div>
+    </div>
+
+    <!-- 添加结果弹窗 -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h3>测试结果</h3>
+            <p>总题数：<span id="finalTotal">0</span></p>
+            <p>正确数：<span id="finalCorrect">0</span></p>
+            <p>错误数：<span id="finalWrong">0</span></p>
+            <p>正确率：<span id="finalRate">0%</span></p>
+            <button onclick="location.reload()">重新开始</button>
+        </div>
+    </div>
+
     <div class="stats">
         <span>总题数: <span id="totalCount" class="number">0</span></span>
         <span>正确: <span id="correctCount" class="number">0</span></span>
@@ -206,23 +281,19 @@
     </div>
 
     <script>
-        let remainingWords = Object.keys(wordData);
+        let targetWordCount = 0; 
+        let remainingWords = [];
         let currentWord = '';
         let selectedPhonetic = null;
         let selectedTranslation = null;
         let wrongAttempts = {};
         let stats = {
-            totalWords: Object.keys(wordData).length,  // 总单词数
-            completedWords: 0,  // 已完成的单词数
-            wrongWords: 0       // 出错的单词数（每个单词只计算一次）
+            totalWords: 0,
+            completedWords: 0,
+            wrongWords: 0
         };
-
-        // 添加开始时间变量
-        const startTime = Date.now();
-
         // 初始化
-        displayNewWord();
-        updateStats();
+        const startTime = Date.now();
     </script>
 </body>
 </html> 
