@@ -53,5 +53,17 @@ const wordData = {
     'cricket': ['/ˈkrɪkɪt/', '板球'],
     'few': ['/fjuː/', '很少的'],
     'rest': ['/rest/', '休息'],
-    'however': ['/haʊˈevə(r)/', '然而']
+    'however': ['/haʊˈevə(r)/', '然而'],
+    'normal': ['/ˈnɔːml/', '正常的'],
+    'usually': ['/ˈjuːʒuəli/', '通常'],
+    'boat': ['/bəʊt/', '小船'],
+    'congratulation': ['/kənˌɡrætʃuˈleɪʃn/', '祝贺'],
+    'rock': ['/rɒk/', '岩石'],
+    'hard': ['/hɑːd/', '困难的，坚硬的'],
+    'fridge': ['/frɪdʒ/', '冰箱'],
+    'move': ['/muːv/', '移动'],
+    'department': ['/dɪˈpɑːtmənt/', '部门'],
+    'wait': ['/weɪt/', '等待'],
+    'learn': ['/lɜːn/', '学习'],
+    'itself': ['/ɪtˈself/', '它自己']
 };
