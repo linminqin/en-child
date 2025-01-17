@@ -109,7 +109,8 @@ function displayNewWord() {
             if (option !== '以上都不对') {
                 for (const [word, [phonetic, _]] of Object.entries(wordData)) {
                     if (phonetic === option) {
-                        speak(word);
+                        // 增加难度，改为不发音，而是在提交正确时才发音
+                        // speak(word);
                         break;
                     }
                 }
@@ -173,9 +174,11 @@ function checkAnswer() {
         });
 
         // 如果是音标选择，且选择了"以上都不对"选项
-        if(selectedPhonetic === "以上都不对" && currentWord) {
-            speak(currentWord);
-        }
+        // if(selectedPhonetic === "以上都不对" && currentWord) {
+        //    speak(currentWord);
+        // }
+        // 正确时发音
+        speak(currentWord);
         // 判断是否有选择"以上都不对"
         const hasSelectedNone = selectedPhonetic === "以上都不对" || selectedTranslation === "以上都不对";
         const delay = hasSelectedNone ? 3000 : 1000;  // 如果选择了"以上都不对"，等待3秒，否则等待1秒    
