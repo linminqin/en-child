@@ -1,21 +1,4 @@
-const wordData = {
-    'dot': ['/dɒt/', '圆点'],
-    'guy': ['/ɡaɪ/', '男人'],
-    'folder': ['/ˈfəʊldə(r)/', '文件夹'],
-    'chef': ['/ʃef/', '主厨'],
-    'transport': ['/ˈtrænspɔːt/', '交通工具'],
-    'melon': ['/ˈmelən/', '甜瓜'],
-    'discount': ['/ˈdɪskaʊnt/', '折扣'],
-    'occupation': ['/ˌɒkjuˈpeɪʃn/', '占领'],
-    'visit': ['/ˈvɪzɪt/', '拜访'],
-    'meet': ['/miːt/', '见面，相遇'],
-    'musical': ['/ˈmjuːzɪkl/', '音乐的'],
-    'mushroom': ['/ˈmʌʃrʊm/', '蘑菇'],
-    'bit': ['/bɪt/', '少量'],
-    'plane': ['/pleɪn/', '飞机'],
-    'receipt': ['/rɪˈsiːt/', '收据'],
-    'entrance': ['/ˈentrəns/', '入口'],
-    'contact': ['/ˈkɒntækt/', '联系'],
+const wordData_250114 = {
     'difficult': ['/ˈdɪfɪkəlt/', '困难的'],
     'closet': ['/ˈklɒzɪt/', '橱柜'],
     'fast': ['/fɑːst/', '迅速的'],
@@ -53,7 +36,28 @@ const wordData = {
     'cricket': ['/ˈkrɪkɪt/', '板球'],
     'few': ['/fjuː/', '很少的'],
     'rest': ['/rest/', '休息'],
-    'however': ['/haʊˈevə(r)/', '然而'],
+    'however': ['/haʊˈevə(r)/', '然而']
+};
+const wordData_250115 = {
+    'dot': ['/dɒt/', '圆点'],
+    'guy': ['/ɡaɪ/', '男人'],
+    'folder': ['/ˈfəʊldə(r)/', '文件夹'],
+    'chef': ['/ʃef/', '主厨'],
+    'transport': ['/ˈtrænspɔːt/', '交通工具'],
+    'melon': ['/ˈmelən/', '甜瓜'],
+    'discount': ['/ˈdɪskaʊnt/', '折扣'],
+    'occupation': ['/ˌɒkjuˈpeɪʃn/', '占领'],
+    'visit': ['/ˈvɪzɪt/', '拜访'],
+    'meet': ['/miːt/', '见面，相遇'],
+    'musical': ['/ˈmjuːzɪkl/', '音乐的'],
+    'mushroom': ['/ˈmʌʃrʊm/', '蘑菇'],
+    'bit': ['/bɪt/', '少量'],
+    'plane': ['/pleɪn/', '飞机'],
+    'receipt': ['/rɪˈsiːt/', '收据'],
+    'entrance': ['/ˈentrəns/', '入口'],
+    'contact': ['/ˈkɒntækt/', '联系']
+};
+const wordData_250116 = {
     'normal': ['/ˈnɔːml/', '正常的'],
     'usually': ['/ˈjuːʒuəli/', '通常'],
     'boat': ['/bəʊt/', '小船'],
@@ -67,3 +71,21 @@ const wordData = {
     'learn': ['/lɜːn/', '学习'],
     'itself': ['/ɪtˈself/', '它自己']
 };
+const wordData_250117 = {
+    'cartoon': ['/kɑːˈtuːn/', '动画片'],
+    'suitcase': ['/ˈsuːtkeɪs/', '手提箱'],
+    'hold': ['/həʊld/', '掌握'],
+    'thing': ['/θɪŋ/', '东西'],
+    'spend': ['/spend/', '花费'],
+    'son': ['/sʌn/', '儿子'],
+    'rubber': ['/ˈrʌbə(r)/', '橡皮'],
+    'once': ['/wʌns/', '一次，曾经'],
+    'month': ['/mʌnθ/', '月'],
+    'kind': ['/kaɪnd/', '种类'],
+    'guest': ['/ɡest/', '客人'],
+    'else': ['/els/', '其他的'],
+    'appointment': ['/əˈpɔɪntmənt/', '预约'],
+    'front': ['/frʌnt/', '前面的'],
+    'chain': ['/tʃeɪn/', '链条，束缚']
+};
+const wordData = Object.assign(wordData_250114, wordData_250115, wordData_250116, wordData_250117);
