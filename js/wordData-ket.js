@@ -88,4 +88,36 @@ const wordData_250117 = {
     'front': ['/frʌnt/', '前面的'],
     'chain': ['/tʃeɪn/', '链条，束缚']
 };
-const wordData = Object.assign(wordData_250114, wordData_250115, wordData_250116, wordData_250117);
+const wordData_250118 = {
+    'finger': ['/ˈfɪŋɡə(r)/', '手指'],
+    'guide': ['/ɡaɪd/', '导游'],
+    'town': ['/taʊn/', '城镇'],
+    'people': ['/ˈpiːpl/', '人'],
+    'bank': ['/bæŋk/', '银行'],
+    'playground': ['/ˈpleɪɡraʊnd/', '操场'],
+    'snack': ['/snæk/', '零食'],
+    'same': ['/seɪm/', '相同的'],
+    'pound': ['/paʊnd/', '英镑'],
+    'look': ['/lʊk/', '看'],
+    'mouth': ['/maʊθ/', '嘴'],
+    'map': ['/mæp/', '地图'],
+    'top': ['/tɒp/', '顶部'],
+    'early': ['/ˈɜːli/', '早期的'],
+    'kilometre': ['/ˈkɪləmiːtə(r)/', '千米']
+};
+const wordData = Object.assign(wordData_250114, wordData_250115, wordData_250116, wordData_250117, wordData_250118);
+
+const wordData_error = {
+    'secretary': ['/ˈsekrətri/', '秘书'],
+    'cricket': ['/ˈkrɪkɪt/', '板球'],
+    'occupation': ['/ˌɒkjuˈpeɪʃn/', '占领'],
+    'receipt': ['/rɪˈsiːt/', '收据'],
+    'congratulation': ['/kənˌɡrætʃuˈleɪʃn/', '祝贺'],
+    'department': ['/dɪˈpɑːtmənt/', '部门'],
+    'normal': ['/ˈnɔːml/', '正常的'],
+    'appointment': ['/əˈpɔɪntmənt/', '预约'],
+    'guide': ['/ɡaɪd/', '导游'],
+    'snack': ['/snæk/', '零食'],
+    'pound': ['/paʊnd/', '英镑'],
+    'kilometre': ['/ˈkɪləmiːtə(r)/', '千米']
+};
