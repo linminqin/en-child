@@ -105,7 +105,25 @@ const wordData_250118 = {
     'early': ['/ˈɜːli/', '早期的'],
     'kilometre': ['/ˈkɪləmiːtə(r)/', '千米']
 };
-const wordData = Object.assign(wordData_250114, wordData_250115, wordData_250116, wordData_250117, wordData_250118);
+const wordData_250119 = {
+    'village': ['/ˈvɪlɪdʒ/', '村庄'],
+    'salad': ['/ˈsæləd/', '色拉'],
+    'university': ['/ˌjuːnɪˈvɜːsəti/', '大学'],
+    'cash': ['/kæʃ/', '现金'],
+    'serve': ['/sɜːv/', '服务'],
+    'tablet': ['/ˈtæblət/', '药片'],
+    'ago': ['/əˈɡəʊ/', '以前'],
+    'clock': ['/klɒk/', '钟'],
+    'local': ['/ˈləʊkl/', '当地的'],
+    'together': ['/təˈɡeðə(r)/', '一起'],
+    'alone': ['/əˈləʊn/', '单独的'],
+    'beginning': ['/bɪˈɡɪnɪŋ/', '开始'],
+    'upset': ['/ʌpˈset/', '沮丧的'],
+    'event': ['/ɪˈvent/', '事件'],
+    'last': ['/lɑːst/', '上一个，最后的']
+};
+const wordData = Object.assign(wordData_250114, wordData_250115, wordData_250116, 
+    wordData_250117, wordData_250118, wordData_250119);
 
 const wordData_error = {
     'secretary': ['/ˈsekrətri/', '秘书'],
@@ -119,5 +137,9 @@ const wordData_error = {
     'guide': ['/ɡaɪd/', '导游'],
     'snack': ['/snæk/', '零食'],
     'pound': ['/paʊnd/', '英镑'],
-    'kilometre': ['/ˈkɪləmiːtə(r)/', '千米']
+    'kilometre': ['/ˈkɪləmiːtə(r)/', '千米'],
+    'last': ['/lɑːst/', '上一个，最后的'],
+    'event': ['/ɪˈvent/', '事件'],
+    'village': ['/ˈvɪlɪdʒ/', '村庄'],
+    'university': ['/ˌjuːnɪˈvɜːsəti/', '大学']
 };
