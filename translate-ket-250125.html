@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 禁止缓存 -->
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="expires" content="0">
+    <title>单词选择练习</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 70px;
+        }
+
+        .stats {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .stats span {
+            margin: 0 10px;
+            font-size: 16px;
+        }
+
+        .word-display {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .options-section {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .options-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .option {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .option:hover {
+            background-color: #e3f2fd;
+            border-color: #2196F3;
+        }
+
+        .option.selected {
+            background-color: #2196F3;
+            color: white;
+            border-color: #1976D2;
+        }
+
+        .option.correct {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #388E3C;
+        }
+
+        .option.wrong {
+            background-color: #f44336;
+            color: white;
+            border-color: #d32f2f;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+                padding-top: 60px;
+            }
+            
+            .word-display {
+                font-size: 20px;
+            }
+            
+            .option {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+
+        /* 添加成功率动画样式 */
+        #successRate {
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        #successRate.highlight {
+            transform: scale(1.2);
+            background-color: #e3f2fd;
+            color: #2196F3;
+        }
+
+        /* 修改统计数字的基础样式 */
+        .stats .number {
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            padding: 2px 8px;
+            border-radius: 4px;
+            background-color: #f5f5f5;  /* 默认背景色 */
+        }
+
+        /* 给不同的统计数字添加不同的背景色 */
+        #correctCount {
+            background-color: #e8f5e9;
+            color: #4CAF50;
+        }
+
+        #wrongCount {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+
+        #successRate {
+            background-color: #e3f2fd;
+            color: #2196F3;
+        }
+
+        /* 高亮动画时加深背景色 */
+        #correctCount.highlight {
+            background-color: #c8e6c9;
+        }
+
+        #wrongCount.highlight {
+            background-color: #ffcdd2;
+        }
+
+        #successRate.highlight {
+            background-color: #bbdefb;
+        }
+
+        /* 添加弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .modal input {
+            margin: 10px 0;
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal button {
+            padding: 8px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal button:hover {
+            background-color: #1976D2;
+        }
+
+        .error-message {
+            color: #f44336;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+    <script src="js/wordData-ket.js"></script>
+    <script src="js/actions.js"></script>
+    <script src="js/actions-chose-cn.js"></script>
+</head>
+<body>
+    <!-- 添加结果弹窗 -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h3>测试结果</h3>
+            <p>总题数：<span id="finalTotal">0</span></p>
+            <p>正确数：<span id="finalCorrect">0</span></p>
+            <p>错误数：<span id="finalWrong">0</span></p>
+            <p>正确率：<span id="finalRate">0%</span></p>
+            <button onclick="location.reload()">重新开始</button>
+        </div>
+    </div>
+
+    <div class="stats">
+        <span>总题数: <span id="totalCount" class="number">0</span></span>
+        <span>正确: <span id="correctCount" class="number">0</span></span>
+        <span>错误: <span id="wrongCount" class="number">0</span></span>
+        <span>成功率: <span id="successRate" class="number">0%</span></span>
+    </div>
+
+    <div class="word-display">
+        <span id="currentWord"></span>
+    </div>
+
+    <div class="options-container">
+        <div class="options-section">
+            <div class="options-title">选择正确的音标：</div>
+            <div class="options-grid" id="phoneticOptions"></div>
+        </div>
+        <div class="options-section">
+            <div class="options-title">选择正确的翻译：</div>
+            <div class="options-grid" id="translationOptions"></div>
+        </div>
+    </div>
+
+    <script>
+        let targetWordCount = 0; 
+        let remainingWords = [];
+        let currentWord = '';
+        let selectedPhonetic = null;
+        let selectedTranslation = null;
+        let wrongAttempts = {};
+        let stats = {
+            totalWords: 0,
+            completedWords: 0,
+            wrongWords: 0
+        };
+        // 初始化
+        const startTime = Date.now();
+
+        // 自动开始测试，使用全部单词
+        window.onload = function() {
+            const totalWords = Object.keys(wordData_250125).length;
+            targetWordCount = totalWords;
+            const allWords = Object.keys(wordData_250125);
+            remainingWords = shuffleArray(allWords);
+            stats.totalWords = totalWords;
+            displayNewWord();
+            updateStats();
+        };
+    </script>
+</body>
+</html> 
