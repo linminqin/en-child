@@ -122,8 +122,94 @@ const wordData_250119 = {
     'event': ['/ɪˈvent/', '事件'],
     'last': ['/lɑːst/', '上一个，最后的']
 };
+const wordData_250120 = {
+    'bad': ['/bæd/', '坏的'],
+    'suggest': ['/səˈdʒest/', '建议'],
+    'date': ['/deɪt/', '日期'],
+    'remember': ['/rɪˈmembə(r)/', '记得'],
+    'better': ['/ˈbetə(r)/', '更好的'],
+    'little': ['/ˈlɪtl/', '小的'],
+    'crowd': ['/kraʊd/', '人群'],
+    'lesson': ['/ˈlesn/', '课程'],
+    'box': ['/bɒks/', '盒子'],
+    'wallet': ['/ˈwɒlɪt/', '钱包'],
+    'chemist': ['/ˈkemɪst/', '化学家'],
+    'myself': ['/maɪˈself/', '自己'],
+    'identification': ['/aɪˌdentɪfɪˈkeɪʃn/', '辨认'],
+    'sausage': ['/ˈsɒsɪdʒ/', '香肠'],
+    'usual': ['/ˈjuːʒuəl/', '通常的']
+};
+const wordData_250121 = {
+    'pleasant': ['/ˈpleznt/', '舒适的'],
+    'digital': ['/ˈdɪdʒɪtl/', '数码的'],
+    'dictionary': ['/ˈdɪkʃənri/', '字典'],
+    'adult': ['/ˈædʌlt/', '成年人'],
+    'news': ['/njuːz/', '新闻'],
+    'where': ['/weə(r)/', '哪里'],
+    'person': ['/ˈpɜːsn/', '本人'],
+    'catch': ['/kætʃ/', '接住'],
+    'enjoy': ['/ɪnˈdʒɔɪ/', '享受'],
+    'electricity': ['/ɪˌlekˈtrɪsəti/', '电'],
+    'musician': ['/mjuːˈzɪʃn/', '音乐家'],
+    'shop': ['/ʃɒp/', '商店'],
+    'much': ['/mʌtʃ/', '非常'],
+    'science': ['/ˈsaɪəns/', '科学'],
+    'cent': ['/sent/', '分币']
+};
+const wordData_250122 = {
+    'carry': ['/ˈkæri/', '携带'],
+    'park': ['/pɑːk/', '公园'],
+    'carpet': ['/ˈkɑːpɪt/', '地毯'],
+    'yourself': ['/jɔːˈself/', '你自己'],
+    'talk': ['/tɔːk/', '讲话'],
+    'traffic': ['/ˈtræfɪk/', '交通'],
+    'lorry': ['/ˈlɒri/', '卡车'],
+    'drawing': ['/ˈdrɔːɪŋ/', '画画'],
+    'mile': ['/maɪl/', '英里'],
+    'fan': ['/fæn/', '风扇，球迷，歌迷'],
+    'radio': ['/ˈreɪdiəʊ/', '收音机'],
+    'spoon': ['/spuːn/', '匙'],
+    'luggage': ['/ˈlʌɡɪdʒ/', '行李'],
+    'tomorrow': ['/təˈmɒrəʊ/', '明天'],
+    'elevator': ['/ˈelɪveɪtə(r)/', '电梯']
+};
+const wordData_250123 = {
+    'weekly': ['/ˈwiːkli/', '每周的，周报'],
+    'open': ['/ˈəʊpən/', '打开'],
+    'tour': ['/tʊə(r)/', '旅游'],
+    'blanket': ['/ˈblæŋkɪt/', '毛毯'],
+    'aeroplane': ['/ˈeərəpleɪn/', '飞机'],
+    'enter': ['/ˈentə(r)/', '进入'],
+    'fit': ['/fɪt/', '适合'],
+    'spare': ['/speə(r)/', '备用的'],
+    'tent': ['/tent/', '帐篷'],
+    'yet': ['/jet/', '仍然'],
+    'lake': ['/leɪk/', '湖泊'],
+    'headache': ['/ˈhedeɪk/', '头痛'],
+    'butter': ['/ˈbʌtə(r)/', '黄油'],
+    'skate': ['/skeɪt/', '滑冰'],
+    'sweater': ['/ˈswetə(r)/', '毛衣']
+};
+const wordData_250125 = {
+    'popular': ['/ˈpɒpjələ(r)/', '受欢迎的'],
+    'already': ['/ɔːlˈredi/', '已经'],
+    'wild': ['/waɪld/', '野性的'],
+    'sell': ['/sel/', '卖'],
+    'some': ['/sʌm/', '一些'],
+    'cool': ['/kuːl/', '凉爽的，从容的'],
+    'street': ['/striːt/', '街道'],
+    'concert': ['/ˈkɒnsət/', '音乐会'],
+    'with': ['/wɪð/', '和，用'],
+    'deep': ['/diːp/', '深的'],
+    'baseball': ['/ˈbeɪsbɔːl/', '棒球'],
+    'information': ['/ˌɪnfəˈmeɪʃn/', '信息'],
+    'strawberry': ['/ˈstrɔːbəri/', '草莓'],
+    'real': ['/rɪəl/', '真的'],
+    'butterfly': ['/ˈbʌtəflaɪ/', '蝴蝶']
+};
 const wordData = Object.assign(wordData_250114, wordData_250115, wordData_250116, 
-    wordData_250117, wordData_250118, wordData_250119);
+    wordData_250117, wordData_250118, wordData_250119, wordData_250120, wordData_250121, 
+    wordData_250122, wordData_250123, wordData_250125);
 
 const wordData_error = {
     'secretary': ['/ˈsekrətri/', '秘书'],
@@ -141,5 +227,9 @@ const wordData_error = {
     'last': ['/lɑːst/', '上一个，最后的'],
     'event': ['/ɪˈvent/', '事件'],
     'village': ['/ˈvɪlɪdʒ/', '村庄'],
-    'university': ['/ˌjuːnɪˈvɜːsəti/', '大学']
+    'university': ['/ˌjuːnɪˈvɜːsəti/', '大学'],
+    'suggest': ['/səˈdʒest/', '建议'],
+    'wallet': ['/ˈwɒlɪt/', '钱包'],
+    'chemist': ['/ˈkemɪst/', '化学家'],
+    'luggage': ['/ˈlʌɡɪdʒ/', '行李']
 };
