@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中文好词好句填空练习</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-top: 70px;
+            background-color: #f5f5f5;
+        }
+
+        .stats {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .stats span {
+            margin: 0 10px;
+            font-size: 16px;
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: #f5f5f5;
+            position: relative;
+        }
+
+        .stats span span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .stats span span.animate {
+            animation: numberChange 0.5s ease-in-out;
+        }
+
+        @keyframes numberChange {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+
+        #progress {
+            color: #2196F3;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        #correctCount {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        #wrongCount {
+            color: #f44336;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        #successRate {
+            color: #FF9800;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .stats span .number {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .stats span .number.pulse {
+            animation: pulse 0.8s cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .sentence-display {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 24px;
+            font-weight: bold;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .sentence-display.fade {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            font-size: 18px;
+            transform: scale(1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option:hover {
+            background-color: #e3f2fd;
+            border-color: #2196F3;
+            transform: scale(1.03);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .option.selected {
+            background-color: #2196F3;
+            color: white;
+            border-color: #1976D2;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(33,150,243,0.3);
+        }
+
+        .option.correct {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #388E3C;
+            animation: correct 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 12px rgba(76,175,80,0.3);
+        }
+
+        .option.wrong {
+            background-color: #f44336;
+            color: white;
+            border-color: #d32f2f;
+            animation: wrong 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 12px rgba(244,67,54,0.3);
+        }
+
+        @keyframes correct {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.15); }
+            60% { transform: scale(1.15) rotate(5deg); }
+            80% { transform: scale(1.15) rotate(-5deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+
+        @keyframes wrong {
+            0% { transform: scale(1); }
+            20% { transform: translateX(-15px); }
+            40% { transform: translateX(15px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+            100% { transform: scale(1) translateX(0); }
+        }
+
+        .info {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 300px;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal.show .modal-content {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .modal button {
+            padding: 10px 25px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .modal button:hover {
+            background-color: #1976D2;
+        }
+
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+                padding-top: 60px;
+            }
+            
+            .sentence-display {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stats">
+        <span>进度 <span id="progress">0</span>/15</span>
+        <span>正确 <span id="correctCount">0</span></span>
+        <span>错误 <span id="wrongCount">0</span></span>
+        <span>正确率 <span id="successRate">0%</span></span>
+    </div>
+
+    <div class="sentence-display">
+        <div id="currentSentence"></div>
+    </div>
+
+    <div class="options-container" id="options">
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <h2>练习完成！</h2>
+            <p>总题数：15</p>
+            <p>正确数：<span id="finalCorrect">0</span></p>
+            <p>错误数：<span id="finalWrong">0</span></p>
+            <p>正确率：<span id="finalRate">0%</span></p>
+            <button onclick="location.reload()">重新开始</button>
+        </div>
+    </div>
+
+    <script src="js/sentenceData.js"></script>
+    <script>
+        let stats = {
+            total: 15,
+            correct: 0,
+            wrong: 0,
+            current: 0
+        };
+
+        let currentSentence = null;
+        let selectedOption = null;
+        let missingWord = '';
+        let currentQuestionWrong = false;
+
+        function updateStats() {
+            const elements = {
+                'progress': stats.current,
+                'correctCount': stats.correct,
+                'wrongCount': stats.wrong,
+                'successRate': stats.current === 0 ? '0%' : Math.round((stats.correct / stats.current) * 100) + '%'
+            };
+
+            for (let [id, value] of Object.entries(elements)) {
+                const element = document.getElementById(id);
+                if (element.textContent !== value.toString()) {
+                    element.classList.add('animate');
+                    element.textContent = value;
+                    setTimeout(() => element.classList.remove('animate'), 500);
+                }
+            }
+        }
+
+        function showResult() {
+            const modal = document.getElementById('resultModal');
+            document.getElementById('finalCorrect').textContent = stats.correct;
+            document.getElementById('finalWrong').textContent = stats.wrong;
+            document.getElementById('finalRate').textContent = 
+                Math.round((stats.correct / stats.total) * 100) + '%';
+            modal.style.display = 'block';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function generateOptions(correctAnswer) {
+            const options = [correctAnswer];
+            const usedSentences = new Set([correctAnswer]);
+            
+            while (options.length < 4) {
+                const randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
+                const words = randomSentence.text.split(/[，。]/);
+                const randomWord = words[Math.floor(Math.random() * words.length)];
+                
+                if (!usedSentences.has(randomWord) && randomWord.length === correctAnswer.length) {
+                    options.push(randomWord);
+                    usedSentences.add(randomWord);
+                }
+            }
+
+            return shuffleArray(options);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function displayNewSentence() {
+            if (stats.current >= stats.total) {
+                showResult();
+                return;
+            }
+
+            currentQuestionWrong = false;
+
+            const sentenceDisplay = document.querySelector('.sentence-display');
+            sentenceDisplay.classList.add('fade');
+
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * sentences.length);
+                currentSentence = sentences[randomIndex];
+                const parts = currentSentence.text.split(/([，。])/);
+                
+                let validParts = parts.filter(part => part.length > 1);
+                const partToReplace = validParts[Math.floor(Math.random() * validParts.length)];
+                missingWord = partToReplace;
+
+                let displayText = currentSentence.text.replace(partToReplace, '_'.repeat(partToReplace.length));
+                document.getElementById('currentSentence').textContent = displayText;
+
+                const options = generateOptions(partToReplace);
+                const optionsContainer = document.getElementById('options');
+                optionsContainer.innerHTML = '';
+                
+                options.forEach(option => {
+                    const button = document.createElement('div');
+                    button.className = 'option';
+                    button.textContent = option;
+                    button.onclick = () => selectOption(button, option);
+                    optionsContainer.appendChild(button);
+                });
+
+                sentenceDisplay.classList.remove('fade');
+            }, 300);
+        }
+
+        function selectOption(button, option) {
+            if (selectedOption) return;
+            selectedOption = button;
+            button.classList.add('selected');
+
+            setTimeout(() => {
+                if (option === missingWord) {
+                    button.classList.add('correct');
+                    if (!currentQuestionWrong) {
+                        stats.correct++;
+                    }
+                    stats.current++;
+                    updateStats();
+
+                    setTimeout(() => {
+                        selectedOption = null;
+                        displayNewSentence();
+                    }, 1000);
+                } else {
+                    button.classList.add('wrong');
+                    if (!currentQuestionWrong) {
+                        stats.wrong++;
+                        currentQuestionWrong = true;
+                    }
+                    updateStats();
+
+                    setTimeout(() => {
+                        button.classList.remove('selected', 'wrong');
+                        selectedOption = null;
+                    }, 1000);
+                }
+            }, 500);
+        }
+
+        window.onload = function() {
+            displayNewSentence();
+            updateStats();
+        };
+    </script>
+</body>
+</html> 
