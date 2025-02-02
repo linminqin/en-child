@@ -110,12 +110,26 @@
             font-size: 24px;
             font-weight: bold;
             background: white;
-            padding: 20px;
+            padding: 20px 20px 35px 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 1;
             transform: translateY(0);
+            position: relative;
+        }
+
+        .category-label {
+            position: absolute;
+            bottom: 8px;
+            right: 15px;
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #eee;
         }
 
         .sentence-display.fade {
@@ -267,6 +281,12 @@
                 padding: 4px 6px;
                 margin: 0 2px;
             }
+
+            .category-label {
+                font-size: 12px;
+                bottom: 6px;
+                right: 12px;
+            }
         }
     </style>
 </head>
@@ -309,13 +329,32 @@
         let selectedOption = null;
         let missingWord = '';
         let currentQuestionWrong = false;
+        let selectedSentences = [];
+
+        function initializeSentences() {
+            const categories = ['风景', '行为', '情感', '人物', '动物', '议论文'];
+            let selected = [];
+            
+            categories.forEach(category => {
+                const categorySentences = sentences.filter(s => s.category === category);
+                const shuffled = shuffleArray([...categorySentences]);
+                selected.push(...shuffled.slice(0, 2));
+            });
+            
+            const remainingCount = stats.total - selected.length;
+            const remainingSentences = sentences.filter(s => !selected.includes(s));
+            const shuffledRemaining = shuffleArray([...remainingSentences]);
+            selected.push(...shuffledRemaining.slice(0, remainingCount));
+            
+            selectedSentences = shuffleArray(selected);
+        }
 
         function updateStats() {
             const elements = {
-                'progress': stats.current,
+                'progress': stats.current + 1,
                 'correctCount': stats.correct,
                 'wrongCount': stats.wrong,
-                'successRate': stats.current === 0 ? '0%' : Math.round((stats.correct / stats.current) * 100) + '%'
+                'successRate': ((stats.correct / (stats.correct + stats.wrong)) * 100 || 0).toFixed(1) + '%'
             };
 
             for (let [id, value] of Object.entries(elements)) {
@@ -333,7 +372,7 @@
             document.getElementById('finalCorrect').textContent = stats.correct;
             document.getElementById('finalWrong').textContent = stats.wrong;
             document.getElementById('finalRate').textContent = 
-                Math.round((stats.correct / stats.total) * 100) + '%';
+                ((stats.correct / (stats.correct + stats.wrong)) * 100 || 0).toFixed(1) + '%';
             modal.style.display = 'block';
             setTimeout(() => modal.classList.add('show'), 10);
         }
@@ -370,14 +409,17 @@
                 return;
             }
 
+            if (selectedSentences.length === 0) {
+                initializeSentences();
+            }
+
             currentQuestionWrong = false;
 
             const sentenceDisplay = document.querySelector('.sentence-display');
             sentenceDisplay.classList.add('fade');
 
             setTimeout(() => {
-                const randomIndex = Math.floor(Math.random() * sentences.length);
-                currentSentence = sentences[randomIndex];
+                currentSentence = selectedSentences[stats.current];
                 const parts = currentSentence.text.split(/([，。])/);
                 
                 let validParts = parts.filter(part => part.length > 1);
@@ -386,6 +428,14 @@
 
                 let displayText = currentSentence.text.replace(partToReplace, '_'.repeat(partToReplace.length));
                 document.getElementById('currentSentence').textContent = displayText;
+                
+                let categoryLabel = document.querySelector('.category-label');
+                if (!categoryLabel) {
+                    categoryLabel = document.createElement('div');
+                    categoryLabel.className = 'category-label';
+                    document.querySelector('.sentence-display').appendChild(categoryLabel);
+                }
+                categoryLabel.textContent = `${currentSentence.category}`;
 
                 const options = generateOptions(partToReplace);
                 const optionsContainer = document.getElementById('options');
@@ -414,7 +464,9 @@
                     if (!currentQuestionWrong) {
                         stats.correct++;
                     }
-                    stats.current++;
+                    if (stats.current < stats.total - 1) {
+                        stats.current++;
+                    }
                     updateStats();
 
                     setTimeout(() => {
