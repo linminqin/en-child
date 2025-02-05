@@ -466,13 +466,19 @@
                     }
                     if (stats.current < stats.total - 1) {
                         stats.current++;
+                        updateStats();
+                        setTimeout(() => {
+                            selectedOption = null;
+                            displayNewSentence();
+                        }, 1000);
+                    } else {
+                        stats.current = stats.total - 1;
+                        updateStats();
+                        setTimeout(() => {
+                            selectedOption = null;
+                            showResult();
+                        }, 1000);
                     }
-                    updateStats();
-
-                    setTimeout(() => {
-                        selectedOption = null;
-                        displayNewSentence();
-                    }, 1000);
                 } else {
                     button.classList.add('wrong');
                     if (!currentQuestionWrong) {
