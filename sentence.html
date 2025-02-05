@@ -377,21 +377,50 @@
             setTimeout(() => modal.classList.add('show'), 10);
         }
 
+        /**
+         * 生成选项列表
+         * @param {string} correctAnswer - 正确答案
+         * @returns {Array<string>} 返回打乱顺序的选项数组
+         * 
+         * 选项生成规则：
+         * 1. 所有选项都来自同一个类别（如风景、人物等）
+         * 2. 每个选项只能使用一次（不重复）
+         * 3. 选项长度与正确答案相近（允许±6个字符的差异）
+         * 4. 总共生成4个选项（包括正确答案）
+         */
         function generateOptions(correctAnswer) {
+            // 初始化选项数组，将正确答案作为第一个选项
             const options = [correctAnswer];
+            // 用Set记录已使用的词语，避免重复
             const usedSentences = new Set([correctAnswer]);
+            // 获取当前句子的类别
+            const currentCategory = currentSentence.category;
             
+            // 筛选出同类别的所有句子
+            const sameCategorySentences = sentences.filter(s => s.category === currentCategory);
+            
+            // 循环生成剩余的选项，直到达到4个选项
             while (options.length < 4) {
-                const randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
+                // 随机选择同类别中的一个句子
+                const randomSentence = sameCategorySentences[Math.floor(Math.random() * sameCategorySentences.length)];
+                // 将句子按标点符号分割成词语
                 const words = randomSentence.text.split(/[，。]/);
+                // 随机选择一个词语
                 const randomWord = words[Math.floor(Math.random() * words.length)];
                 
-                if (!usedSentences.has(randomWord) && randomWord.length === correctAnswer.length) {
+                // 检查词语是否符合要求：
+                // 1. 未被使用过
+                // 2. 长度至少4个字符
+                // 3. 长度与正确答案相近（±6个字符）
+                if (!usedSentences.has(randomWord) && randomWord.length >= 4 
+                    && randomWord.length >= correctAnswer.length - 6 
+                    && randomWord.length <= correctAnswer.length + 6) {
                     options.push(randomWord);
                     usedSentences.add(randomWord);
                 }
             }
 
+            // 打乱选项顺序并返回
             return shuffleArray(options);
         }
 
